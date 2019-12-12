@@ -2,7 +2,7 @@
 
 as classes sero:
 1. NAVE PRINCIPAL - Lucas
-2. METEORO
+2. METEORO		  - Victor
 3. NAVE INIMIGA   - Eduardo
 4. LASER
 
