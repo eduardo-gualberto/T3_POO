@@ -10,7 +10,7 @@ Meteoro::Meteoro(float startX, float startY)
 
     Texture* texture = new Texture();
 
-    texture->loadFromFile("meteoro.png");
+    texture->loadFromFile("../img/meteoro.png");
 
     //MeteoroShape.setSize(sf::Vector2f(30, 30));
     this->setPosition(position);
