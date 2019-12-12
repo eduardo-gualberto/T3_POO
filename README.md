@@ -1,0 +1,11 @@
+# T3_POO
+
+as classes sero:
+1. NAVE PRINCIPAL
+2. METEORO
+3. NAVE INIMIGA
+4. LASER
+
+OBSERVA-SE QUE TODAS ESTAS TEM DE SER HERDEIRAS DE SPRITE PARA PODEREM SER RENDERIZADAS NA TELA
+
+quem for fazer as classes acima, coloca o nome na frente dela.
