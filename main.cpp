@@ -19,16 +19,16 @@ int main()
     int lives = 5;
 
     //Largura / 2 para elementos aparecerem no meio da tela
-    Nave nave(LARGURA / 2, ALTURA - 50);
-    Meteoro meteoro(LARGURA / 2, 1);
-    Text hud;
-    Font font;
-    font.loadFromFile("Hack Regular Nerd Font Complete Mono.ttf");
+    Nave* nave = new Nave(100, 100);
+    //Meteoro meteoro(LARGURA / 2, 1);
+    //Text hud;
+    //Font font;
+    /*font.loadFromFile("Hack Regular Nerd Font Complete Mono.ttf");
 
     hud.setFont(font);
     hud.setCharacterSize(20);
     hud.setFillColor(sf::Color::White);
-
+*/
     while (window.isOpen())
     {
         //window.background("avatar.png");
@@ -40,15 +40,15 @@ int main()
                 window.close();
         }
 
-        if (Keyboard::isKeyPressed(Keyboard::Left))
+        /*if (Keyboard::isKeyPressed(Keyboard::Left))
         {
             //esquerda
-            nave.moveLeft();
+            nave->moveLeft();
         }
         else if (Keyboard::isKeyPressed(Keyboard::Right))
         {
             //direita
-            nave.moveRight();
+            nave->moveRight();
         }
         else if (Keyboard::isKeyPressed(sf::Keyboard::Escape))
         {
@@ -63,7 +63,7 @@ int main()
             score++;
         }
 
-        if (meteoro.getPosition().intersects(nave.getPosition()))
+        if (meteoro.getGlobalBounds().intersects(nave->getGlobalBounds()))
         {
             //meteoro tocou na nave
             lives--;
@@ -76,23 +76,23 @@ int main()
         }
 
         //calculando novas posições da nave e do meteoro
-        meteoro.update();
-        nave.update();
+        meteoro.update();*/
+        //nave->update();
 
         // Update the HUD text
-        std::stringstream ss;
+       /* std::stringstream ss;
         ss << "Score:" << score << std::endl << "Lives:" << lives << std::endl << "Speed:" << int(100*meteoro.Meteoro::getVelocity()) << "m/s";
-        hud.setString(ss.str());
+        hud.setString(ss.str());*/
 
         // Clear everything from the last frame
-        window.clear(Color(0, 0, 0, 255));
+        window.clear(Color(200, 200, 200));
 
-        window.draw(nave.getShape());
+        window.draw(*nave);
 
-        window.draw(meteoro.getShape());
+        //window.draw(meteoro.getShape());
 
         // Draw our score
-        window.draw(hud);
+       // window.draw(hud);
 
         // Show everything we just drew
         window.display();

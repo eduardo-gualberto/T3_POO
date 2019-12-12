@@ -2,36 +2,29 @@
 #define ALTURA 50
 #define LARGURA 50
 
-Nave::Nave(float startX, float startY)
+Nave::Nave(float startX, float startY) : Sprite()
 {
-    position.x = startX;
-    position.y = startY;
- 
-    naveShape.setSize(sf::Vector2f(LARGURA, ALTURA));
-    naveShape.setPosition(position);
-}
-
-FloatRect Nave::getPosition()
-{
-    return naveShape.getGlobalBounds();
-}
- 
-RectangleShape Nave::getShape()
-{
-    return naveShape;
+    Texture* txtr = new Texture();
+    txtr->loadFromFile("pedra2.png");
+    this->setTexture(*txtr);
+    position = new Vector2f();
+    position->x = startX;
+    position->y = startY;
+    
+    this->setPosition(position->x, position->y);
 }
  
 void Nave::moveLeft()
 {
-    position.x -= naveSpeed;
+    position->x -= naveSpeed;
 }
  
 void Nave::moveRight()
 {
-    position.x += naveSpeed;
+    position->x += naveSpeed;
 }
  
 void Nave::update()
 {
-    naveShape.setPosition(position);
+    this->setPosition(position->x, position->y);
 } 
