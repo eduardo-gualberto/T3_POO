@@ -1,7 +1,7 @@
 # T3_POO
 
 as classes sero:
-1. NAVE PRINCIPAL
+1. NAVE PRINCIPAL - Lucas
 2. METEORO
 3. NAVE INIMIGA
 4. LASER
