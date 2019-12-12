@@ -9,3 +9,6 @@ as classes sero:
 OBSERVA-SE QUE TODAS ESTAS TEM DE SER HERDEIRAS DE SPRITE PARA PODEREM SER RENDERIZADAS NA TELA
 
 quem for fazer as classes acima, coloca o nome na frente dela.
+
+os arquivos cpp e h devem ser salvos em src/
+as imagens devem ser salvas em img/
