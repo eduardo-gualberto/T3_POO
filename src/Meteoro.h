@@ -16,3 +16,14 @@ class Meteoro : public Sprite
         Sprite MeteoroShape;
         float Velocity = .4f;
 }; 
+
+/*
+    Metodo getPosition() sobescreve o da classe Sprite, nao é interessante
+    this->getGlobalBounds() já é um método de Sprite, não precisa fazer outro metodo so pra retornar ele
+    
+    position é um atributo. atribuir valores diferentes a ele, nao muda a posicao do sprite na tela. Pra
+isso é necessário usar os métodos move() ou setPosition().
+
+    Gostei do jeito de acelerar o meteoro.
+
+*/
