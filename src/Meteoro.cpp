@@ -1,7 +1,8 @@
+#pragma once
 #include "Meteoro.h"
 #include "time.h"
 
-#define LARGURA 400
+#define LARGURA 500
 
 Meteoro::Meteoro(float startX, float startY)
 {
@@ -12,14 +13,8 @@ Meteoro::Meteoro(float startX, float startY)
 
     texture->loadFromFile("../img/meteoro.png");
 
-    //MeteoroShape.setSize(sf::Vector2f(30, 30));
     this->setPosition(position);
     this->setTexture(*texture);
-}
-
-FloatRect Meteoro::getPosition()
-{
-    return this->getGlobalBounds();
 }
 
 float Meteoro::getVelocity(){
