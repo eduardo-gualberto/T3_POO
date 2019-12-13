@@ -15,6 +15,8 @@ using namespace sf;
 
 void startMenu(RenderWindow* window){
     
+    bool transition = false;
+
     Font font;
     font.loadFromFile("font_start_menu.ttf");
     Text text;
@@ -36,6 +38,8 @@ void startMenu(RenderWindow* window){
     Sprite backgorund_txt(backgorund_txt_img);
     backgorund_txt.setScale(12.5, 4.5);
     backgorund_txt.setPosition(160, 255);
+    float bg_txt_alpha = 255;
+    float dalpha_bg_txt = 0;
     
     while (window->isOpen())
     {
@@ -44,14 +48,21 @@ void startMenu(RenderWindow* window){
         {
             if(e.type == Event::Closed)
                 window->close();
-            if(e.type == Event::KeyPressed)
-                return;
+            if(e.type == Event::KeyPressed){
+                transition = true;
+                dalpha_bg_txt = 3;
+                text_alpha = bg_txt_alpha = 255;
+            }
+                
         }
 
 
         text.setFillColor(Color(255,255,255,text_alpha-=3));
-        if(text_alpha <= 70)
+        backgorund_txt.setColor(Color(255,255,255,bg_txt_alpha-=dalpha_bg_txt));
+        if(!transition && text_alpha <= 70)
             text_alpha = 255;
+        if(transition && text_alpha <= 10)
+            return;
         window->clear(Color(255,255,255));
 
         window->draw(backgorund);
