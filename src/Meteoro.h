@@ -12,9 +12,8 @@ class Meteoro : public Sprite
         float getVelocity();
     private:
         Vector2f position;
-        float Velocity = .6f;
+        float Velocity = .8f;
         float startX, startY;
-        int hitCount = 0;
 }; 
 
 #include "Meteoro.cpp"
