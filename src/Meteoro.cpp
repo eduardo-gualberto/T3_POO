@@ -25,11 +25,12 @@ void Meteoro::hit() //meteoro "bateu no chao" ou encostou na nave
 {
     position.y = 1;
     position.x = rand() % LARGURA;
-    Velocity += Velocity / 100; //aumenta velocidade gradativamente
+    this->setPosition(position);
 }
 
 void Meteoro::update()
 {
+    Velocity += Velocity / 100; //aumenta velocidade gradativamente
     position.y += Velocity;
     this->setPosition(position);
 }
