@@ -2,7 +2,7 @@
 #include "Meteoro.h"
 #include "time.h"
 
-#define LARGURA 500
+#define LARGURA 900
 
 Meteoro::Meteoro(float startX, float startY)
 {

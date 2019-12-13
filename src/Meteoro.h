@@ -12,7 +12,7 @@ class Meteoro : public Sprite
         float getVelocity();
     private:
         Vector2f position;
-        float Velocity = .4f;
+        float Velocity = .6f;
         float startX, startY;
 }; 
 

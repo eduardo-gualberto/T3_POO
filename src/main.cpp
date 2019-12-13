@@ -1,5 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include "Laser.h"
+#include "Meteoro.h"
+#include <sstream>  //para imprimir coisas na tela
+#include <iostream>
 using namespace sf;
 
 /*
@@ -74,10 +77,13 @@ void startMenu(RenderWindow* window){
     
 }
 
+//janela formada será de LARGURA x ALTURA
+#define LARGURA 900 //obs: ao mudar largura deve-se mudar #define largura de meteoro.cpp    
+#define ALTURA 600
 
 int main(){
 
-    RenderWindow window(VideoMode(900, 600), "Teste!");
+    RenderWindow window(VideoMode(LARGURA, ALTURA), "Teste!");
     window.setFramerateLimit(60);
 
     Texture backgorund_img;
@@ -89,10 +95,22 @@ int main(){
     Laser laser1(ALIADO, 400, 400, 2, 0);
     Laser laser2(INIMIGO, 350, 350, -2, -2);
 
+    Meteoro meteoro(LARGURA / 2, 1);//iniciando meteoro no centro superior da tela
+
     CircleShape circle(100.f);
     circle.setFillColor(Color(255,255,255));
 
-    startMenu(&window);
+    //startMenu(&window);
+
+    //Implementando hud
+    Text hud;
+    Font font;
+    font.loadFromFile("../font_start_menu.ttf");
+    hud.setFont(font);
+    hud.setCharacterSize(20);
+    hud.setFillColor(sf::Color::Red);
+    int score = 0;  //pontuação do jogador
+    int lives = 5;  //vidas do jogador
 
     while (window.isOpen())
     {
@@ -110,13 +128,44 @@ int main(){
                 }
             }
         }
+
+        // meteoro tocou embaixo da tela
+        if (meteoro.getGlobalBounds().top > ALTURA)
+        {
+            meteoro.hit();
+            score++;
+        }
+/*
+    Funcionará quando a nave for implementada
+        //meteoro tocou na nave
+        if (meteoro.getGlobalBounds().intersects(nave.getGlobalBounds()))
+        {
+            lives--;
+            meteoro.hit();
+
+            if (lives < 1){
+                std::cout << "FIM DE JOGO" << std::endl;
+                exit (0);
+            }
+        }
+*/
+        //calculando nova posição do meteoro
+        meteoro.update();
+
+        //imprimindo hud
+        std::stringstream ss;
+        ss << "Score:" << score << std::endl << "Lives:" << lives << std::endl
+           << "Speed:" << int(100*meteoro.Meteoro::getVelocity()) << "m/s";
+        hud.setString(ss.str());
         
-        window.clear(Color(255,255,255));
+        window.clear(Color(255,255,255,255));
         window.draw(backgorund);
 
         window.draw(circle);
         window.draw(laser1);
         window.draw(laser2);
+        window.draw(meteoro);
+        window.draw(hud);
 
         window.display();
     }
