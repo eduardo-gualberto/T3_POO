@@ -159,7 +159,11 @@ START:
     Laser laser1(ALIADO, 400, 400, 6, 0);
     Laser laser2(INIMIGO, 350, 350, 7, 0);
 
-    Meteoro meteoro(LARGURA / 2, 1);//iniciando meteoro no centro superior da tela
+    Meteoro meteoro1(LARGURA / 2, 0, 0);//iniciando meteoro no centro superior da tela
+    Meteoro meteoro2(LARGURA / 7, -500, 0);
+    Meteoro meteoro3(LARGURA / 5, -1000, 0);
+    Meteoro meteoroE(LARGURA / 1.8, -2000, 1);//meteoro especial
+
 
     CircleShape circle(100.f);
     circle.setFillColor(Color(255,255,255));
@@ -172,7 +176,7 @@ START:
     hud.setCharacterSize(20);
     hud.setFillColor(sf::Color::Red);
     int score = 0;  //pontuação do jogador
-    int lives = 5;  //vidas do jogador
+    int lives = 50;  //vidas do jogador
 
     while (window->isOpen())
     {
@@ -190,13 +194,37 @@ START:
                 }
             }*/
         }
-
+/*
         // meteoro tocou embaixo da tela
-        if (meteoro.getGlobalBounds().top > ALTURA)
-        {
-            meteoro.hit();
+        if ((meteoro1.getGlobalBounds().top == ALTURA) ||
+            (meteoro2.getGlobalBounds().top == ALTURA) ||
+            (meteoro3.getGlobalBounds().top == ALTURA) ||
+            (meteoroE.getGlobalBounds().top == ALTURA))
             score++;
+*/
+        if (meteoro1.getGlobalBounds().top > ALTURA)
+        {
+            meteoro1.hit(0);
             lives--;
+            score++;
+        }
+        if (meteoro2.getGlobalBounds().top > ALTURA)
+        {
+            meteoro2.hit(0);
+            lives = lives - 5;
+            score++;
+        }
+        if (meteoro3.getGlobalBounds().top > ALTURA)
+        {
+            meteoro3.hit(0);
+            lives--;
+            score++;
+        }
+        if (meteoroE.getGlobalBounds().top > ALTURA)
+        {
+            meteoroE.hit(1);
+            lives--;
+            score++;
         }
 /*
     Funcionará quando a nave for implementada
@@ -219,7 +247,10 @@ START:
             goto START;
         }
 
-        meteoro.update();
+        meteoro1.update();
+        meteoro2.update();
+        meteoro3.update();
+        meteoroE.update();
 
 
         laser1.update();
@@ -238,7 +269,10 @@ START:
         //imprimindo hud
         std::stringstream ss;
         ss << "Score:" << score << std::endl << "Lives:" << lives << std::endl
-           << "Speed:" << int(100*meteoro.Meteoro::getVelocity()) << "m/s";
+           << "Speed1:" << int(100*meteoro1.Meteoro::getVelocity()) << "m/s" << std::endl
+           << "Speed2:" << int(100*meteoro2.Meteoro::getVelocity()) << "m/s" << std::endl
+           << "Speed3:" << int(100*meteoro3.Meteoro::getVelocity()) << "m/s" << std::endl
+           << "SpeedE:" << int(100*meteoroE.Meteoro::getVelocity()) << "m/s";
         hud.setString(ss.str());
         
         window->clear(Color(255,255,255,255));
@@ -246,7 +280,10 @@ START:
         window->draw(circle);
         window->draw(laser1);
         window->draw(laser2);
-        window->draw(meteoro);
+        window->draw(meteoro1);
+        window->draw(meteoro2);
+        window->draw(meteoro3);
+        window->draw(meteoroE);
         window->draw(hud);
 
         window->display();
