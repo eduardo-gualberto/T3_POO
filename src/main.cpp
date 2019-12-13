@@ -16,6 +16,11 @@ using namespace sf;
 
 */
 
+void startMenu(RenderWindow*);
+void mainGame(RenderWindow*);
+void endMenu(RenderWindow*);
+
+
 void startMenu(RenderWindow* window){
     
     bool transition = false;
@@ -64,8 +69,10 @@ void startMenu(RenderWindow* window){
         backgorund_txt.setColor(Color(255,255,255,bg_txt_alpha-=dalpha_bg_txt));
         if(!transition && text_alpha <= 70)
             text_alpha = 255;
-        if(transition && text_alpha <= 10)
+        if(transition && text_alpha <= 10){
+            mainGame(window);
             return;
+        }
         window->clear(Color(255,255,255));
 
         window->draw(backgorund);
@@ -77,15 +84,72 @@ void startMenu(RenderWindow* window){
     
 }
 
+void endMenu(RenderWindow* window){
+    
+    bool transition = false;
+
+    Font font;
+    font.loadFromFile("font_start_menu.ttf");
+    Text text;
+    text.setFont(font);
+    text.setString("END OF JOURNEY, JEDI"); 
+    text.setPosition(235, 272.5);
+    text.setCharacterSize(30);
+    float text2_alpha = 255;
+
+    Text text2;
+    text2.setFont(font);
+    text2.setString("PRESS ANY KEY TO RESTART"); 
+    text2.setPosition(235, 307.5);
+    text2.setCharacterSize(20);
+
+    Texture backgorund_img;
+    backgorund_img.loadFromFile("img/space_bg.jpg");
+
+    Sprite backgorund(backgorund_img);
+    backgorund.setScale(.475, .7);
+
+    while (window->isOpen())
+    {
+        Event e;
+        while (window->pollEvent(e))
+        {
+            if(e.type == Event::Closed)
+                window->close();
+            if(e.type == Event::KeyPressed){
+                transition = true;
+                text2_alpha = 255;
+            }
+                
+        }
+
+
+        text2.setFillColor(Color(255,255,255,text2_alpha-=3));
+        if(!transition && text2_alpha <= 70)
+            text2_alpha = 255;
+        if(transition && text2_alpha <= 10)
+            return;
+
+        window->clear(Color(255,255,255));
+
+        window->draw(backgorund);
+        window->draw(text);
+        window->draw(text2);
+
+        window->display();
+    }
+}
+
+
+
 //janela formada será de LARGURA x ALTURA
 #define LARGURA 900 //obs: ao mudar largura deve-se mudar #define largura de meteoro.cpp    
 #define ALTURA 600
 
-int main(){
 
-    RenderWindow window(VideoMode(LARGURA, ALTURA), "Teste!");
-    window.setFramerateLimit(60);
 
+void mainGame(RenderWindow* window){
+START:
     Texture backgorund_img;
     backgorund_img.loadFromFile("img/space_bg.jpg");
 
@@ -100,8 +164,6 @@ int main(){
     CircleShape circle(100.f);
     circle.setFillColor(Color(255,255,255));
 
-    startMenu(&window);
-
     //Implementando hud
     Text hud;
     Font font;
@@ -112,13 +174,13 @@ int main(){
     int score = 0;  //pontuação do jogador
     int lives = 5;  //vidas do jogador
 
-    while (window.isOpen())
+    while (window->isOpen())
     {
         Event e;
-        while (window.pollEvent(e))
+        while (window->pollEvent(e))
         {
             if(e.type == Event::Closed)
-                window.close();
+                window->close();
             /*if(e.type == Event::KeyPressed){
                 switch(e.key.code){
                     case Keyboard::Down:
@@ -134,6 +196,7 @@ int main(){
         {
             meteoro.hit();
             score++;
+            lives--;
         }
 /*
     Funcionará quando a nave for implementada
@@ -150,6 +213,12 @@ int main(){
         }
 */
         //calculando nova posição do meteoro
+
+        if(lives == 0){
+            endMenu(window);
+            goto START;
+        }
+
         meteoro.update();
 
 
@@ -172,19 +241,37 @@ int main(){
            << "Speed:" << int(100*meteoro.Meteoro::getVelocity()) << "m/s";
         hud.setString(ss.str());
         
-        window.clear(Color(255,255,255,255));
-        window.draw(backgorund);
+        window->clear(Color(255,255,255,255));
+        window->draw(backgorund);
+        window->draw(circle);
+        window->draw(laser1);
+        window->draw(laser2);
+        window->draw(meteoro);
+        window->draw(hud);
 
-        window.draw(circle);
-        window.draw(laser1);
-        window.draw(laser2);
-        window.draw(meteoro);
-        window.draw(hud);
-
-        window.display();
+        window->display();
     }
-    
+}
 
+/*
+    DIMINUI A MAIN, AGORA ELA SO FAZ A CHAMADA DE STARTMENU, QUE COMEÇA O GAME
+    A IDEIA É AGORA DIVIDIR OS ARQUIVOS, FAZER UM ARQUIVO SÓ PARA ENDMENU
+    OUTRO SO PARA MAINGAME E DA MESMA FORMA PRA STARTMENU
+
+    VAI FICAR MAIS FACIL DE PROCURAR E ENTENDER O CODIGO
+*/
+
+
+
+
+
+int main(){
+
+    RenderWindow window(VideoMode(LARGURA, ALTURA), "Teste!");
+    window.setFramerateLimit(60);
+
+    startMenu(&window);
+   
 
     return 0;
 }
