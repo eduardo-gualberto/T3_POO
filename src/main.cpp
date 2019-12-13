@@ -194,14 +194,6 @@ START:
                 }
             }*/
         }
-/*
-        // meteoro tocou embaixo da tela
-        if ((meteoro1.getGlobalBounds().top == ALTURA) ||
-            (meteoro2.getGlobalBounds().top == ALTURA) ||
-            (meteoro3.getGlobalBounds().top == ALTURA) ||
-            (meteoroE.getGlobalBounds().top == ALTURA))
-            score++;
-*/
         if (meteoro1.getGlobalBounds().top > ALTURA)
         {
             meteoro1.hit(0);
@@ -211,7 +203,7 @@ START:
         if (meteoro2.getGlobalBounds().top > ALTURA)
         {
             meteoro2.hit(0);
-            lives = lives - 5;
+            lives--;
             score++;
         }
         if (meteoro3.getGlobalBounds().top > ALTURA)
@@ -223,7 +215,7 @@ START:
         if (meteoroE.getGlobalBounds().top > ALTURA)
         {
             meteoroE.hit(1);
-            lives--;
+            lives = lives - 5;
             score++;
         }
 /*

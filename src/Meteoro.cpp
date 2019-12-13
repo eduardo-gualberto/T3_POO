@@ -4,13 +4,13 @@
 
 #define LARGURA 900
 
-Meteoro::Meteoro(float startX, float startY, int tipo)
+Meteoro::Meteoro(float startX, float startY, bool especial)
 {
     position.x = startX;
     position.y = startY;
 
     Texture* texture = new Texture();
-    if (tipo == 1)
+    if (especial)
     	texture->loadFromFile("img/meteoro_grande.png");
     else
     	texture->loadFromFile("img/meteoro.png");
@@ -23,11 +23,11 @@ float Meteoro::getVelocity(){
     return Velocity;
 }
 
-void Meteoro::hit(int tipo) //meteoro "bateu no chao" ou encostou na nave
+void Meteoro::hit(bool especial) //meteoro "bateu no chao" ou encostou na nave
 {
     position.y = -1000;
     position.x = rand() % LARGURA;
-    if (tipo == 1)
+    if (especial)
     	Velocity = 1;	//meteoro especial tem velocidade fixa
     else
     	Velocity *= 1.01; //aumenta velocidade em 1%
