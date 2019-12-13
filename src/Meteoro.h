@@ -14,6 +14,7 @@ class Meteoro : public Sprite
         Vector2f position;
         float Velocity = .6f;
         float startX, startY;
+        int hitCount = 0;
 }; 
 
 #include "Meteoro.cpp"

@@ -11,7 +11,7 @@ Meteoro::Meteoro(float startX, float startY)
 
     Texture* texture = new Texture();
 
-    texture->loadFromFile("../img/meteoro.png");
+    texture->loadFromFile("img/meteoro.png");
 
     this->setPosition(position);
     this->setTexture(*texture);
@@ -25,6 +25,7 @@ void Meteoro::hit() //meteoro "bateu no chao" ou encostou na nave
 {
     position.y = 1;
     position.x = rand() % LARGURA;
+    Velocity = .6f + (float)(++hitCount)/100;
     this->setPosition(position);
 }
 

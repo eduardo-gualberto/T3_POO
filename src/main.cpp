@@ -100,12 +100,12 @@ int main(){
     CircleShape circle(100.f);
     circle.setFillColor(Color(255,255,255));
 
-    //startMenu(&window);
+    startMenu(&window);
 
     //Implementando hud
     Text hud;
     Font font;
-    font.loadFromFile("../font_start_menu.ttf");
+    font.loadFromFile("font_start_menu.ttf");
     hud.setFont(font);
     hud.setCharacterSize(20);
     hud.setFillColor(sf::Color::Red);
