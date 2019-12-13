@@ -92,8 +92,8 @@ int main(){
     Sprite backgorund(backgorund_img);
     backgorund.setScale(.475, .7);
 
-    Laser laser1(ALIADO, 400, 400, 2, 0);
-    Laser laser2(INIMIGO, 350, 350, -2, -2);
+    Laser laser1(ALIADO, 400, 400, 6, 0);
+    Laser laser2(INIMIGO, 350, 350, 7, 0);
 
     Meteoro meteoro(LARGURA / 2, 1);//iniciando meteoro no centro superior da tela
 
@@ -119,14 +119,14 @@ int main(){
         {
             if(e.type == Event::Closed)
                 window.close();
-            if(e.type == Event::KeyPressed){
+            /*if(e.type == Event::KeyPressed){
                 switch(e.key.code){
                     case Keyboard::Down:
                         laser1.update(); break;
                     case Keyboard::Up:
                         laser2.update(); break;
                 }
-            }
+            }*/
         }
 
         // meteoro tocou embaixo da tela
@@ -151,6 +151,20 @@ int main(){
 */
         //calculando nova posição do meteoro
         meteoro.update();
+
+
+        laser1.update();
+        laser2.update();
+
+        if(laser1.getPosition().x > LARGURA)
+            laser1.setPosition(0, ALTURA/2);
+        if(laser1.getPosition().y > ALTURA)
+            laser1.setPosition(LARGURA, 0);
+
+        if(laser2.getPosition().x > LARGURA)
+            laser2.setPosition(0, ALTURA/2);
+        if(laser2.getPosition().y > ALTURA)
+            laser2.setPosition(LARGURA, 0);
 
         //imprimindo hud
         std::stringstream ss;
