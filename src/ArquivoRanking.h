@@ -1,3 +1,4 @@
+#pragma once
 #ifndef ARQUIVORANKING_H
 #define ARQUIVORANKING_H
 #include <string>
