@@ -2,6 +2,7 @@
 #include <SFML/Audio.hpp>
 #include "Laser.h"
 #include "Meteoro.h"
+#include "NaveInimiga.h"
 #include "Item.h"
 #include <sstream>  //para imprimir coisas na tela
 #include <iostream>
@@ -165,6 +166,7 @@ START:
     Meteoro meteoro2(LARGURA / 7, -500, 0, 2);
     Meteoro meteoro3(LARGURA / 5, -1000, 0, 2);
     Meteoro meteoroE(LARGURA / 1.8, -2000, 1, 1);//meteoro especial
+    NaveInimiga inimigo(true, 0, 0, 1.0);
 
     Item vida(1);
 /*
@@ -182,6 +184,9 @@ START:
     int lives = 50;  //vidas do jogador
     int ItemDesativado = 1;
     Clock clk;
+    Clock ClockInimigo;
+    int direcao = 1;
+    int x = inimigo.getPosition().x;
     while (window->isOpen())
     {
         Event e;
@@ -198,6 +203,18 @@ START:
                 }
             }*/
         }
+
+        // Tentativa de fazer a nave inimiga ir e voltar(protótipo ainda errado) - método de update
+        if(ClockInimigo.getElapsedTime().asSeconds() > 1.0f) {
+            if(x >= LARGURA)
+                direcao = -1;
+            if(x <= 0)
+                direcao = 1;
+            inimigo.move(10 * direcao * ClockInimigo.getElapsedTime().asSeconds(), 0.f);
+            ClockInimigo.restart().asSeconds();
+            x = inimigo.getPosition().x;
+        }
+
         if (meteoro1.getGlobalBounds().top > ALTURA)
         {
             meteoro1.hit(0);
@@ -285,6 +302,7 @@ START:
         window->draw(meteoro3);
         window->draw(meteoroE);
         window->draw(vida);
+        window->draw(inimigo);
         window->draw(hud);
 
         window->display();
