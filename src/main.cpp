@@ -159,22 +159,21 @@ START:
     Laser laser1(ALIADO, 400, 400, 6, 0);
     Laser laser2(INIMIGO, 350, 350, 7, 0);
 
-    Meteoro meteoro1(LARGURA / 2, 0, 0);//iniciando meteoro no centro superior da tela
-    Meteoro meteoro2(LARGURA / 7, -500, 0);
-    Meteoro meteoro3(LARGURA / 5, -1000, 0);
-    Meteoro meteoroE(LARGURA / 1.8, -2000, 1);//meteoro especial
-
-
+    Meteoro meteoro1(LARGURA / 2, 0, 0, 2);//iniciando meteoro no centro superior da tela
+    Meteoro meteoro2(LARGURA / 7, -500, 0, 2);
+    Meteoro meteoro3(LARGURA / 5, -1000, 0, 2);
+    Meteoro meteoroE(LARGURA / 1.8, -2000, 1, 1);//meteoro especial
+/*
     CircleShape circle(100.f);
     circle.setFillColor(Color(255,255,255));
-
+*/
     //Implementando hud
     Text hud;
     Font font;
     font.loadFromFile("font_start_menu.ttf");
     hud.setFont(font);
     hud.setCharacterSize(20);
-    hud.setFillColor(sf::Color::Red);
+    hud.setFillColor(sf::Color::White);
     int score = 0;  //pontuação do jogador
     int lives = 50;  //vidas do jogador
 
@@ -225,11 +224,6 @@ START:
         {
             lives--;
             meteoro.hit();
-
-            if (lives < 1){
-                std::cout << "FIM DE JOGO" << std::endl;
-                exit (0);
-            }
         }
 */
         //calculando nova posição do meteoro
@@ -260,16 +254,16 @@ START:
 
         //imprimindo hud
         std::stringstream ss;
-        ss << "Score:" << score << std::endl << "Lives:" << lives << std::endl
-           << "Speed1:" << int(100*meteoro1.Meteoro::getVelocity()) << "m/s" << std::endl
-           << "Speed2:" << int(100*meteoro2.Meteoro::getVelocity()) << "m/s" << std::endl
-           << "Speed3:" << int(100*meteoro3.Meteoro::getVelocity()) << "m/s" << std::endl
-           << "SpeedE:" << int(100*meteoroE.Meteoro::getVelocity()) << "m/s";
+        ss << " -> Score:" << score << std::endl << " -> Lives:" << lives << std::endl << std::endl
+           << " Speed1:" << int(100*meteoro1.Meteoro::getVelocity()) << "m/s" << std::endl
+           << " Speed2:" << int(100*meteoro2.Meteoro::getVelocity()) << "m/s" << std::endl
+           << " Speed3:" << int(100*meteoro3.Meteoro::getVelocity()) << "m/s" << std::endl
+           << " SpeedE:" << int(100*meteoroE.Meteoro::getVelocity()) << "m/s" << std::endl;
         hud.setString(ss.str());
         
         window->clear(Color(255,255,255,255));
         window->draw(backgorund);
-        window->draw(circle);
+        //window->draw(circle);
         window->draw(laser1);
         window->draw(laser2);
         window->draw(meteoro1);

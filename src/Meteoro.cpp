@@ -3,8 +3,10 @@
 #include "time.h"
 
 #define LARGURA 900
+#define MAXVEL 15       //velocidade maxima do meteoro
 
-Meteoro::Meteoro(float startX, float startY, bool especial)
+Meteoro::Meteoro(float startX, float startY, bool especial, float Velocity):
+Velocity(Velocity)
 {
     position.x = startX;
     position.y = startY;
@@ -27,15 +29,18 @@ void Meteoro::hit(bool especial) //meteoro "bateu no chao" ou encostou na nave
 {
     position.y = -1000;
     position.x = rand() % LARGURA;
-    if (especial)
-    	Velocity = 1;	//meteoro especial tem velocidade fixa
+    if (Velocity < MAXVEL){ //os meteoros possuem uma velocidade max
+        if (especial)           //meteoro especial tem velocidade diferente
+        	Velocity *= 1.02;	//aumenta velocidade em 2%
+        else
+        	Velocity *= 1.03;   //aumenta velocidade em 3%
+    }
     else
-    	Velocity *= 1.01; //aumenta velocidade em 1%
+        Velocity = MAXVEL;
     this->setPosition(position);
 }
 
 void Meteoro::update()
 {
-    position.y += Velocity;
-    this->setPosition(position);
+    this->move(0,Velocity);
 }
