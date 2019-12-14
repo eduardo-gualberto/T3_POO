@@ -1,14 +1,15 @@
 #pragma once
 #include "NaveInimiga.h"
 
-NaveInimiga::NaveInimiga(bool alive, float x, float y, float sp) {
+NaveInimiga::NaveInimiga(bool alive, float x, float y, float speed):
+speed(speed) {
 
     alive = true;
 
     position.x = x;
     position.y = y;
 
-    sp = speed;
+    //sp = speed;
 
     Texture *texture = new Texture();
     // imagem da aliada para testes
@@ -25,8 +26,17 @@ bool NaveInimiga::isAlive() {
 void NaveInimiga::die() {
     alive = false;
 }
-/*
-void NaveInimiga::update(int direcao, Time elapsedTime) {
-    this->move(direcao * speed * elapsedTime.asSeconds(), 0.f);
+
+float NaveInimiga::getSpeed(){
+    return speed;
 }
-*/
+
+void NaveInimiga::SaiuDaTela(){
+    speed = speed * (-1);
+    //position.x *= speed;
+    //this->setPosition(position);
+    this->move(speed,0);
+}
+void NaveInimiga::update() {
+    this->move(speed,0);
+}

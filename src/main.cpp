@@ -166,7 +166,7 @@ START:
     Meteoro meteoro2(LARGURA / 7, -500, 0, 2);
     Meteoro meteoro3(LARGURA / 5, -1000, 0, 2);
     Meteoro meteoroE(LARGURA / 1.8, -2000, 1, 1);//meteoro especial
-    NaveInimiga inimigo(true, 0, 0, 1.0);
+    NaveInimiga inimigo(true, 1, 1, 1.5);
 
     Item vida(1);
 /*
@@ -185,8 +185,8 @@ START:
     int ItemDesativado = 1;
     Clock clk;
     Clock ClockInimigo;
-    int direcao = 1;
-    int x = inimigo.getPosition().x;
+    //int direcao = 1;
+    //int x = inimigo.getPosition().x;
     while (window->isOpen())
     {
         Event e;
@@ -203,7 +203,7 @@ START:
                 }
             }*/
         }
-
+/*
         // Tentativa de fazer a nave inimiga ir e voltar(protótipo ainda errado) - método de update
         if(ClockInimigo.getElapsedTime().asSeconds() > 1.0f) {
             if(x >= LARGURA)
@@ -214,7 +214,11 @@ START:
             ClockInimigo.restart().asSeconds();
             x = inimigo.getPosition().x;
         }
-
+*/
+        if ((inimigo.getGlobalBounds().left > LARGURA) || (inimigo.getGlobalBounds().left < 0)){
+            std::cout << "saiu" << std::endl;
+            inimigo.SaiuDaTela();
+        }
         if (meteoro1.getGlobalBounds().top > ALTURA)
         {
             meteoro1.hit(0);
@@ -253,7 +257,7 @@ START:
         }
 
         Time tempoPassado = clk.getElapsedTime();
-        std::cout << int(tempoPassado.asSeconds()) << std::endl;
+        //std::cout << int(tempoPassado.asSeconds()) << std::endl;
         if (int(tempoPassado.asSeconds()) > 10){    //nova vida aparecera a cada 10 segundos
             clk.restart();
             ItemDesativado *= -1;
@@ -269,6 +273,7 @@ START:
         meteoro2.update();
         meteoro3.update();
         meteoroE.update();
+        inimigo.update();
 
         laser1.update();
         laser2.update();
