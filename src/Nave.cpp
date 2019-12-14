@@ -3,7 +3,7 @@
 using namespace sf;
 Nave::Nave(){
     Texture* texture = new Texture();
-    texture->loadFromFile("/home/lucas/Desktop/JOGO/xwingsprite.png");
+    texture->loadFromFile("img/xwingsprite.png");
     this->setPosition(450,450);
     this->setTexture(*texture);
 }
