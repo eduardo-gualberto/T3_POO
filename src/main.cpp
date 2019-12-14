@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "Laser.h"
 #include "Meteoro.h"
+#include "Item.h"
 #include <sstream>  //para imprimir coisas na tela
 #include <iostream>
 using namespace sf;
@@ -163,6 +164,8 @@ START:
     Meteoro meteoro2(LARGURA / 7, -500, 0, 2);
     Meteoro meteoro3(LARGURA / 5, -1000, 0, 2);
     Meteoro meteoroE(LARGURA / 1.8, -2000, 1, 1);//meteoro especial
+
+    Item vida(1);
 /*
     CircleShape circle(100.f);
     circle.setFillColor(Color(255,255,255));
@@ -176,7 +179,8 @@ START:
     hud.setFillColor(sf::Color::White);
     int score = 0;  //pontuação do jogador
     int lives = 50;  //vidas do jogador
-
+    int ItemDesativado = 1;
+    Clock clk;
     while (window->isOpen())
     {
         Event e;
@@ -220,24 +224,33 @@ START:
 /*
     Funcionará quando a nave for implementada
         //meteoro tocou na nave
-        if (meteoro.getGlobalBounds().intersects(nave.getGlobalBounds()))
-        {
+        if (meteoro.getGlobalBounds().intersects(nave.getGlobalBounds())){
             lives--;
             meteoro.hit();
         }
 */
-        //calculando nova posição do meteoro
-
         if(lives == 0){
             endMenu(window);
             goto START;
         }
 
+        Time tempoPassado = clk.getElapsedTime();
+        std::cout << int(tempoPassado.asSeconds()) << std::endl;
+        if (int(tempoPassado.asSeconds()) > 10){    //nova vida aparecera a cada 10 segundos
+            clk.restart();
+            ItemDesativado *= -1;
+            vida.ItemAction(ItemDesativado);
+        }
+        /*if (vida.getGlobalBounds().intersects(nave.getGlobalBounds())){
+            lives++;
+            vida.ItemCatch();
+        }*/
+        vida.update();
+
         meteoro1.update();
         meteoro2.update();
         meteoro3.update();
         meteoroE.update();
-
 
         laser1.update();
         laser2.update();
@@ -270,6 +283,7 @@ START:
         window->draw(meteoro2);
         window->draw(meteoro3);
         window->draw(meteoroE);
+        window->draw(vida);
         window->draw(hud);
 
         window->display();
