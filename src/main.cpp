@@ -167,12 +167,8 @@ START:
     Meteoro meteoro3(LARGURA / 5, -1000, 0, 2);
     Meteoro meteoroE(LARGURA / 1.8, -2000, 1, 1);//meteoro especial
     NaveInimiga inimigo(true, 1, 1, 1.5);
-
     Item vida(1);
-/*
-    CircleShape circle(100.f);
-    circle.setFillColor(Color(255,255,255));
-*/
+
     //Implementando hud
     Text hud;
     Font font;
@@ -196,10 +192,7 @@ START:
                 window->close();
             /*if(e.type == Event::KeyPressed){
                 switch(e.key.code){
-                    case Keyboard::Down:
-                        laser1.update(); break;
-                    case Keyboard::Up:
-                        laser2.update(); break;
+                    
                 }
             }*/
         }
@@ -313,17 +306,6 @@ START:
         window->display();
     }
 }
-
-/*
-    DIMINUI A MAIN, AGORA ELA SO FAZ A CHAMADA DE STARTMENU, QUE COMEÇA O GAME
-    A IDEIA É AGORA DIVIDIR OS ARQUIVOS, FAZER UM ARQUIVO SÓ PARA ENDMENU
-    OUTRO SO PARA MAINGAME E DA MESMA FORMA PRA STARTMENU
-
-    VAI FICAR MAIS FACIL DE PROCURAR E ENTENDER O CODIGO
-*/
-
-
-
 
 
 int main(){

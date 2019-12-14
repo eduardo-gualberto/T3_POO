@@ -34,7 +34,7 @@ vector<Jogador> ArquivoRanking::LeituraArquivo(string filename){
     ifstream arq(filename.c_str(),ios::binary);
     if(arq.is_open()){
         arq.read(reinterpret_cast<char*>(&player), sizeof(Jogador));
-        while(arq.good()){
+        while(!arq.eof()){
             jogadores.push_back(player);
             cout << jogadores[i].getNome() << endl;
             i++;
@@ -48,6 +48,5 @@ vector<Jogador> ArquivoRanking::LeituraArquivo(string filename){
     }
 
     arq.close();
-
 }
 
