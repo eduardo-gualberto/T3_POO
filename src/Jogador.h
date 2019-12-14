@@ -21,4 +21,6 @@ class Jogador
         int pontuacao;
 };
 
+#include "Jogador.cpp"
+
 #endif // JOGADOR_H

@@ -12,7 +12,7 @@ class ArquivoRanking
         ArquivoRanking();
         virtual ~ArquivoRanking();
         void EscritaArquivo(string filename,Jogador player);
-        vector<Jogador> LeituraArquivo(string filename);
+        Jogador LeituraArquivo(string filename);
         static bool comparaPontuacao(Jogador a, Jogador b);
 
     protected:
@@ -22,5 +22,7 @@ class ArquivoRanking
         vector<Jogador> jogadores;
 
 };
+
+#include "ArquivoRanking.cpp"
 
 #endif // ARQUIVORANKING_H
