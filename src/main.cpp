@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Laser.h"
 #include "Meteoro.h"
 #include "Item.h"
@@ -306,6 +307,11 @@ int main(){
 
     RenderWindow window(VideoMode(LARGURA, ALTURA), "Teste!");
     window.setFramerateLimit(60);
+    Music music;
+    if (!music.openFromFile("music/music.ogg"))
+        std::cout << "Não foi possível abrir arquivo de música" << std::endl;
+    music.play();
+    music.setLoop(true);
 
     startMenu(&window);
    
