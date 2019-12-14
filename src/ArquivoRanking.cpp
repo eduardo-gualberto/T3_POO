@@ -1,3 +1,4 @@
+#pragma once
 #include "ArquivoRanking.h"
 #include <iostream>
 #include <vector>
