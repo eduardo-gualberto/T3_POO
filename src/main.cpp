@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "Laser.h"
+#include "ArquivoRanking.h"
 #include "Meteoro.h"
 #include "NaveInimiga.h"
 #include "Item.h"

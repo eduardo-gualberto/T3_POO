@@ -4,6 +4,8 @@
 Jogador::Jogador()
 {
     //ctor
+    this->nome = nm;
+    this->pontuacao = 0;
 }
 
 Jogador::~Jogador()
