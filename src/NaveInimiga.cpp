@@ -13,7 +13,7 @@ speed(speed) {
 
     Texture *texture = new Texture();
     // imagem da aliada para testes
-    texture->loadFromFile("img/xwingsprite.png");
+    texture->loadFromFile("img/nave_inimiga.png");
 
     this->setTexture(*texture);
     this->setPosition(position);

@@ -181,6 +181,24 @@ START:
     int ItemDesativado = 1;
     Clock clk;
 
+    SoundBuffer buffer_explosao;
+    if (!buffer_explosao.loadFromFile("music/jogador_explode.ogg"))
+        std::cout << "Não foi possível abrir arquivo de áudio" << std::endl;
+    Sound explosao;
+    explosao.setBuffer(buffer_explosao);
+
+    SoundBuffer buffer_vida;
+    if (!buffer_vida.loadFromFile("music/vida.ogg"))
+        std::cout << "Não foi possível abrir arquivo de áudio" << std::endl;
+    Sound som_vida;
+    som_vida.setBuffer(buffer_vida);
+
+    SoundBuffer buffer_tiro;
+    if (!buffer_tiro.loadFromFile("music/jogador_atira.ogg"))
+        std::cout << "Não foi possível abrir arquivo de áudio" << std::endl;
+    Sound som_tiro;
+    som_tiro.setBuffer(buffer_tiro);
+
     while (window->isOpen())
     {
         Event e;
@@ -225,19 +243,23 @@ START:
         //meteoro tocou na nave
         if (meteoro1.getGlobalBounds().intersects(nave.getGlobalBounds())){
             lives--;        //no lugar vai ser setlife de jogador
+            explosao.play();
             meteoro1.hit(0);
         }
         if (meteoro2.getGlobalBounds().intersects(nave.getGlobalBounds())){
             lives--;        //no lugar vai ser setlife de jogador
+            explosao.play();
             meteoro2.hit(0);
         }
         if (meteoro3.getGlobalBounds().intersects(nave.getGlobalBounds())){
             lives--;        //no lugar vai ser setlife de jogador
+            explosao.play();
             meteoro3.hit(0);
         }
         if (meteoroE.getGlobalBounds().intersects(nave.getGlobalBounds())){
             lives = lives - 5;//no lugar vai ser setlife de jogador
-            meteoroE.hit(0);
+            explosao.play();
+            meteoroE.hit(1);
         }
         Time tempoPassado = clk.getElapsedTime();
         if (int(tempoPassado.asSeconds()) > 10){    //nova vida aparecera a cada 10 segundos
@@ -246,10 +268,12 @@ START:
             vida.ItemAction(ItemDesativado);
         }
         if (vida.getGlobalBounds().intersects(nave.getGlobalBounds())){
+            som_vida.play();
             lives++;        //no lugar vai ser setlife de jogador
             vida.ItemCatch();
         }
         if(lives <= 0){
+            explosao.play();
             endMenu(window);
             goto START;
         }
@@ -263,15 +287,22 @@ START:
         laser1.update();
         laser2.update();
 
-        if(laser1.getPosition().x > LARGURA)
+        if(laser1.getPosition().x > LARGURA){
+            som_tiro.play();
             laser1.setPosition(0, ALTURA/2);
-        if(laser1.getPosition().y > ALTURA)
+        }
+        if(laser1.getPosition().y > ALTURA){
+            som_tiro.play();
             laser1.setPosition(LARGURA, 0);
-
-        if(laser2.getPosition().x > LARGURA)
+        }
+        if(laser2.getPosition().x > LARGURA){
+            som_tiro.play();
             laser2.setPosition(0, ALTURA/2);
-        if(laser2.getPosition().y > ALTURA)
+        }
+        if(laser2.getPosition().y > ALTURA){
+            som_tiro.play();
             laser2.setPosition(LARGURA, 0);
+        }
 
         //imprimindo hud
         std::stringstream ss;
@@ -304,6 +335,7 @@ int main(){
     if (!music.openFromFile("music/music.ogg"))
         std::cout << "Não foi possível abrir arquivo de música" << std::endl;
     music.play();
+    music.setVolume(70);
     music.setLoop(true);
 
     startMenu(&window);
