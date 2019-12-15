@@ -4,6 +4,7 @@
 #include "Meteoro.h"
 #include "NaveInimiga.h"
 #include "Item.h"
+#include "Nave.hpp"
 #include <sstream>  //para imprimir coisas na tela
 #include <iostream>
 using namespace sf;
@@ -144,12 +145,9 @@ void endMenu(RenderWindow* window){
 }
 
 
-
 //janela formada será de LARGURA x ALTURA
-#define LARGURA 900 //obs: ao mudar largura deve-se mudar #define largura de meteoro.cpp    
+#define LARGURA 900  
 #define ALTURA 600
-
-
 
 void mainGame(RenderWindow* window){
 START:
@@ -161,13 +159,13 @@ START:
 
     Laser laser1(ALIADO, 400, 400, 6, 0);
     Laser laser2(INIMIGO, 350, 350, 7, 0);
-
-    Meteoro meteoro1(LARGURA / 2, 0, 0, 2);//iniciando meteoro no centro superior da tela
+    Meteoro meteoro1(LARGURA / 2, 0, 0, 2);
     Meteoro meteoro2(LARGURA / 7, -500, 0, 2);
     Meteoro meteoro3(LARGURA / 5, -1000, 0, 2);
-    Meteoro meteoroE(LARGURA / 1.8, -2000, 1, 1);//meteoro especial
+    Meteoro meteoroE(LARGURA / 1.8, -2000, 1, 1);
     NaveInimiga inimigo(true, 1, 1, 1.5);
     Item vida(1);
+    Nave nave;
 
     //Implementando hud
     Text hud;
@@ -176,13 +174,12 @@ START:
     hud.setFont(font);
     hud.setCharacterSize(20);
     hud.setFillColor(sf::Color::White);
-    int score = 0;  //pontuação do jogador
-    int lives = 50;  //vidas do jogador
+    //variaveis
+    int score = 0;
+    int lives = 5;
     int ItemDesativado = 1;
     Clock clk;
-    Clock ClockInimigo;
-    //int direcao = 1;
-    //int x = inimigo.getPosition().x;
+
     while (window->isOpen())
     {
         Event e;
@@ -190,84 +187,78 @@ START:
         {
             if(e.type == Event::Closed)
                 window->close();
-            /*if(e.type == Event::KeyPressed){
-                switch(e.key.code){
-                    
-                }
-            }*/
         }
-/*
-        // Tentativa de fazer a nave inimiga ir e voltar(protótipo ainda errado) - método de update
-        if(ClockInimigo.getElapsedTime().asSeconds() > 1.0f) {
-            if(x >= LARGURA)
-                direcao = -1;
-            if(x <= 0)
-                direcao = 1;
-            inimigo.move(10 * direcao * ClockInimigo.getElapsedTime().asSeconds(), 0.f);
-            ClockInimigo.restart().asSeconds();
-            x = inimigo.getPosition().x;
-        }
-*/
+        if (Keyboard::isKeyPressed(Keyboard::W))
+            nave.update(1);
+        if (Keyboard::isKeyPressed(Keyboard::S))
+            nave.update(2);
+        if (Keyboard::isKeyPressed(sf::Keyboard::D))
+            nave.update(3);
+        if (Keyboard::isKeyPressed(sf::Keyboard::A))
+            nave.update(4);
+
         if ((inimigo.getGlobalBounds().left > LARGURA) || (inimigo.getGlobalBounds().left < 0)){
-            std::cout << "saiu" << std::endl;
             inimigo.SaiuDaTela();
         }
         if (meteoro1.getGlobalBounds().top > ALTURA)
         {
             meteoro1.hit(0);
-            lives--;
-            score++;
+            score++;        //no lugar vai ser setscore de jogador
         }
         if (meteoro2.getGlobalBounds().top > ALTURA)
         {
             meteoro2.hit(0);
-            lives--;
-            score++;
+            score++;        //no lugar vai ser setscore de jogador
         }
         if (meteoro3.getGlobalBounds().top > ALTURA)
         {
             meteoro3.hit(0);
-            lives--;
-            score++;
+            score++;        //no lugar vai ser setscore de jogador
         }
         if (meteoroE.getGlobalBounds().top > ALTURA)
         {
             meteoroE.hit(1);
-            lives = lives - 5;
-            score++;
-        }
-/*
-    Funcionará quando a nave for implementada
-        //meteoro tocou na nave
-        if (meteoro.getGlobalBounds().intersects(nave.getGlobalBounds())){
-            lives--;
-            meteoro.hit();
-        }
-*/
-        if(lives == 0){
-            endMenu(window);
-            goto START;
+            score++;        //no lugar vai ser setscore de jogador
         }
 
+        //meteoro tocou na nave
+        if (meteoro1.getGlobalBounds().intersects(nave.getGlobalBounds())){
+            lives--;        //no lugar vai ser setlife de jogador
+            meteoro1.hit(0);
+        }
+        if (meteoro2.getGlobalBounds().intersects(nave.getGlobalBounds())){
+            lives--;        //no lugar vai ser setlife de jogador
+            meteoro2.hit(0);
+        }
+        if (meteoro3.getGlobalBounds().intersects(nave.getGlobalBounds())){
+            lives--;        //no lugar vai ser setlife de jogador
+            meteoro3.hit(0);
+        }
+        if (meteoroE.getGlobalBounds().intersects(nave.getGlobalBounds())){
+            lives = lives - 5;//no lugar vai ser setlife de jogador
+            meteoroE.hit(0);
+        }
         Time tempoPassado = clk.getElapsedTime();
-        //std::cout << int(tempoPassado.asSeconds()) << std::endl;
         if (int(tempoPassado.asSeconds()) > 10){    //nova vida aparecera a cada 10 segundos
             clk.restart();
             ItemDesativado *= -1;
             vida.ItemAction(ItemDesativado);
         }
-        /*if (vida.getGlobalBounds().intersects(nave.getGlobalBounds())){
-            lives++;
+        if (vida.getGlobalBounds().intersects(nave.getGlobalBounds())){
+            lives++;        //no lugar vai ser setlife de jogador
             vida.ItemCatch();
-        }*/
-        vida.update();
+        }
+        if(lives <= 0){
+            endMenu(window);
+            goto START;
+        }
 
+        vida.update();
         meteoro1.update();
         meteoro2.update();
         meteoro3.update();
         meteoroE.update();
         inimigo.update();
-
         laser1.update();
         laser2.update();
 
@@ -283,16 +274,12 @@ START:
 
         //imprimindo hud
         std::stringstream ss;
-        ss << " -> Score:" << score << std::endl << " -> Lives:" << lives << std::endl << std::endl
-           << " Speed1:" << int(100*meteoro1.Meteoro::getVelocity()) << "m/s" << std::endl
-           << " Speed2:" << int(100*meteoro2.Meteoro::getVelocity()) << "m/s" << std::endl
-           << " Speed3:" << int(100*meteoro3.Meteoro::getVelocity()) << "m/s" << std::endl
-           << " SpeedE:" << int(100*meteoroE.Meteoro::getVelocity()) << "m/s" << std::endl;
+        ss << " -> Score:" << score << std::endl << " -> Lives:" << lives << std::endl
+           << "Speed: " << int(meteoro1.Meteoro::getVelocity())*10 << "X" << std::endl;
         hud.setString(ss.str());
         
         window->clear(Color(255,255,255,255));
         window->draw(backgorund);
-        //window->draw(circle);
         window->draw(laser1);
         window->draw(laser2);
         window->draw(meteoro1);
@@ -301,12 +288,12 @@ START:
         window->draw(meteoroE);
         window->draw(vida);
         window->draw(inimigo);
+        window->draw(nave);
         window->draw(hud);
 
         window->display();
     }
 }
-
 
 int main(){
 
@@ -319,7 +306,5 @@ int main(){
     music.setLoop(true);
 
     startMenu(&window);
-   
-
     return 0;
 }
