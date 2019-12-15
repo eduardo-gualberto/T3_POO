@@ -29,6 +29,8 @@ SoundBuffer SetSom(string nomeArquivo)
     return nomeBuffer;
 }
 */
+
+void dano(Clock tempo_demage, Sprite &sprite);
 void startMenu(RenderWindow *);
 void mainGame(RenderWindow *);
 void endMenu(RenderWindow *);
@@ -205,6 +207,8 @@ START:
     int lives = 5;
     int ItemDesativado = 1;
     Clock clk;
+    Clock demage_aliado;
+    Clock demage_inimigo;
 
     //sons usados no jogo
     /*                                                                          */
@@ -255,12 +259,10 @@ START:
             nave.update(3);
         if ((Keyboard::isKeyPressed(Keyboard::A)) || (Keyboard::isKeyPressed(Keyboard::Left)))
             nave.update(4);
-        /*if ((Keyboard::isKeyPressed(Keyboard::Space)
 
-        */
-
-       // Atira o laser aliado
-        if(laserAliado1.getPosition().y <= 0) {
+        // Atira o laser aliado
+        if (laserAliado1.getPosition().y <= 0)
+        {
             som_tiro.play();
             laserAliado1.setPosition(nave.getPosition().x + nave.getTexture()->getSize().x / 2, nave.getPosition().y);
             laserAliado1.update();
@@ -311,6 +313,8 @@ START:
         {
             lives--;
             explosao_inimigo.play();
+            demage_inimigo.restart();
+            demage_aliado.restart();
             //implementar morte da nave inimiga
         }
 
@@ -318,6 +322,7 @@ START:
         if (laserAliado1.getGlobalBounds().intersects(inimigo.getGlobalBounds()))
         {
             //implementar dano da nave inimiga
+            demage_inimigo.restart();
             laserAliado1.setPosition(-10000, -10000);
         }
 
@@ -327,18 +332,21 @@ START:
             lives--; //no lugar vai ser setlife de jogador
             explosao.play();
             laserInimigo1.setPosition(10000, 10000);
+            demage_aliado.restart();
         }
         if (laserInimigo2.getGlobalBounds().intersects(nave.getGlobalBounds()))
         {
             lives--; //no lugar vai ser setlife de jogador
             explosao.play();
             laserInimigo2.setPosition(10000, 10000);
+            demage_aliado.restart();
         }
         if (laserInimigo3.getGlobalBounds().intersects(nave.getGlobalBounds()))
         {
             lives--; //no lugar vai ser setlife de jogador
             explosao.play();
             laserInimigo3.setPosition(10000, 10000);
+            demage_aliado.restart();
         }
 
         //verifica se os meteoros tocaram na nave
@@ -347,24 +355,28 @@ START:
             lives--; //no lugar vai ser setlife de jogador
             explosao.play();
             meteoro1.hit(0);
+            demage_aliado.restart();
         }
         if (meteoro2.getGlobalBounds().intersects(nave.getGlobalBounds()))
         {
             lives--; //no lugar vai ser setlife de jogador
             explosao.play();
             meteoro2.hit(0);
+            demage_aliado.restart();
         }
         if (meteoro3.getGlobalBounds().intersects(nave.getGlobalBounds()))
         {
             lives--; //no lugar vai ser setlife de jogador
             explosao.play();
             meteoro3.hit(0);
+            demage_aliado.restart();
         }
         if (meteoroE.getGlobalBounds().intersects(nave.getGlobalBounds()))
         {
             lives = lives - 3; //no lugar vai ser setlife de jogador
             explosao.play();
             meteoroE.hit(1);
+            demage_aliado.restart();
         }
 
         //contador para o item vida
@@ -383,13 +395,18 @@ START:
             lives++; //no lugar vai ser setlife de jogador
             vida.ItemCatch();
         }
-/*
+        /*
         Time tempo_respawn = tempo_morto.getElapsedTime();
         if (int(tempo_respawn.asSeconds()) > 10)*/
-/*
-        Time tempo_dano = tempo.getElapsedTime();
-            if (int(tempo_respawn.asSeconds()) > 10)
-        Color(255, 255, 255, 255);*/
+
+        dano(demage_aliado, nave);
+        dano(demage_inimigo, inimigo);
+        /*
+        Time tempo_dano = tempo_demage.getElapsedTime();
+        if (int(tempo_dano.asMilliseconds()) < 100)
+            nave.setColor(Color(255, 0, 0, 250));
+        else
+            nave.setColor(Color(255, 255, 255, 255));*/
 
         //se as vidas acabaram o jogo termina
         if (lives <= 0)
@@ -433,6 +450,17 @@ START:
 
         window->display();
     }
+}
+
+//funcao responsavel por verificar se o objeto deve 
+//ficar avermelhado (recebeu dano) ou voltar a cor normal
+void dano(Clock tempo_demage, Sprite &sprite)
+{
+    Time tempo_dano = tempo_demage.getElapsedTime();
+    if (int(tempo_dano.asMilliseconds()) < 100)
+        sprite.setColor(Color(255, 0, 0, 250));
+    else
+        sprite.setColor(Color(255, 255, 255, 255));
 }
 
 int main()
