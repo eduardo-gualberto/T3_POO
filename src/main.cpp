@@ -53,6 +53,12 @@ void startMenu(RenderWindow* window){
     backgorund_txt.setPosition(160, 255);
     float bg_txt_alpha = 255;
     float dalpha_bg_txt = 0;
+
+    SoundBuffer buffer;
+    if (!buffer.loadFromFile("music/som_blaster.ogg"))
+        std::cout << "Não foi possível abrir arquivo de áudio" << std::endl;
+    Sound som;
+    som.setBuffer(buffer);
     
     while (window->isOpen())
     {
@@ -65,8 +71,10 @@ void startMenu(RenderWindow* window){
                 transition = true;
                 dalpha_bg_txt = 3;
                 text_alpha = bg_txt_alpha = 255;
+                som.setVolume(50);
+                som.play();
             }
-                
+            
         }
 
 
@@ -114,6 +122,12 @@ void endMenu(RenderWindow* window){
     Sprite backgorund(backgorund_img);
     backgorund.setScale(.475, .7);
 
+    SoundBuffer buffer_sabre;
+    if (!buffer_sabre.loadFromFile("music/sabredeluz.ogg"))
+        std::cout << "Não foi possível abrir arquivo de áudio" << std::endl;
+    Sound sabre;
+    sabre.setBuffer(buffer_sabre);
+
     while (window->isOpen())
     {
         Event e;
@@ -124,8 +138,9 @@ void endMenu(RenderWindow* window){
             if(e.type == Event::KeyPressed){
                 transition = true;
                 text2_alpha = 255;
+                sabre.play();
             }
-                
+            
         }
 
 
@@ -160,9 +175,9 @@ START:
 
     Laser laser1(ALIADO, 400, 400, 6, 0);
     Laser laser2(INIMIGO, 350, 350, 7, 0);
-    Meteoro meteoro1(LARGURA / 2, 0, 0, 2);
-    Meteoro meteoro2(LARGURA / 7, -500, 0, 2);
-    Meteoro meteoro3(LARGURA / 5, -1000, 0, 2);
+    Meteoro meteoro1(LARGURA / 2, 0, 0, 3);
+    Meteoro meteoro2(LARGURA / 7, -500, 0, 3);
+    Meteoro meteoro3(LARGURA / 5, -1000, 0, 3);
     Meteoro meteoroE(LARGURA / 1.8, -2000, 1, 1);
     NaveInimiga inimigo(true, 1, 1, 1.5);
     Item vida(1);
@@ -257,7 +272,7 @@ START:
             meteoro3.hit(0);
         }
         if (meteoroE.getGlobalBounds().intersects(nave.getGlobalBounds())){
-            lives = lives - 5;//no lugar vai ser setlife de jogador
+            lives = lives - 3;//no lugar vai ser setlife de jogador
             explosao.play();
             meteoroE.hit(1);
         }
@@ -306,8 +321,7 @@ START:
 
         //imprimindo hud
         std::stringstream ss;
-        ss << " -> Score:" << score << std::endl << " -> Lives:" << lives << std::endl
-           << "Speed: " << int(meteoro1.Meteoro::getVelocity())*10 << "X" << std::endl;
+        ss << " -> Score:" << score << std::endl << " -> Lives:" << lives << std::endl;
         hud.setString(ss.str());
         
         window->clear(Color(255,255,255,255));

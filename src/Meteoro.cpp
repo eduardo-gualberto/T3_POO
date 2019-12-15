@@ -27,13 +27,14 @@ float Meteoro::getVelocity(){
 
 void Meteoro::hit(bool especial) //meteoro "bateu no chao" ou encostou na nave
 {
+    srand(time(NULL));
     position.y = -1000;
     position.x = rand() % LARGURA;
     if (Velocity < MAXVEL){ //os meteoros possuem uma velocidade max
         if (especial)           //meteoro especial tem velocidade diferente
         	Velocity *= 1.02;	//aumenta velocidade em 2%
         else
-        	Velocity *= 1.03;   //aumenta velocidade em 3%
+        	Velocity *= 1.05;   //aumenta velocidade em 5%
     }
     else
         Velocity = MAXVEL;
