@@ -20,17 +20,10 @@ using namespace sf;
 
 
 */
-/*
-SoundBuffer SetSom(string nomeArquivo)
-{
-    SoundBuffer nomeBuffer;
-    if (!nomeBuffer.loadFromFile(nomeArquivo))
-        std::cout << "Não foi possível abrir arquivo de áudio" << std::endl;
-    return nomeBuffer;
-}
-*/
-
-void dano(Clock tempo_demage, Sprite &sprite);
+void meteoro_tocou_nave(Meteoro &, Nave &, int &, bool, Clock &, Sound &);
+void laser_tocou_nave(Laser &, Nave &, int &, Clock &);
+void meteoro_saiu_da_tela(Meteoro &, int &, bool);
+void dano(Clock, Sprite &);
 void startMenu(RenderWindow *);
 void mainGame(RenderWindow *);
 void endMenu(RenderWindow *);
@@ -182,10 +175,10 @@ START:
     Sprite backgorund(backgorund_img);
     backgorund.setScale(.475, .7);
 
-    Laser laserAliado1(ALIADO, 487.5, 450, 0, -5);
-    Laser laserInimigo1(INIMIGO, 0, 0, 0, 2.5);
-    Laser laserInimigo2(INIMIGO, 0, 0, 1, 2);
-    Laser laserInimigo3(INIMIGO, 0, 0, -1, 2);
+    Laser laserAliado1(ALIADO, 487.5, 450, 0, -20);
+    Laser laserInimigo1(INIMIGO, 0, 0, 0, 8);
+    Laser laserInimigo2(INIMIGO, 0, 0, 1, 7);
+    Laser laserInimigo3(INIMIGO, 0, 0, -1, 7);
     Meteoro meteoro1(LARGURA / 2, 0, 0, 3);
     Meteoro meteoro2(LARGURA / 7, -500, 0, 3);
     Meteoro meteoro3(LARGURA / 5, -1000, 0, 3);
@@ -282,31 +275,24 @@ START:
 
         //verifica se o inimigo n vai sair da tela
         if ((inimigo.getGlobalBounds().left > LARGURA - inimigo.getTexture()->getSize().x) || (inimigo.getGlobalBounds().left < 0))
-        {
             inimigo.SaiuDaTela();
-        }
 
         //verifica se os meteoros ja sairam da tela
-        if (meteoro1.getGlobalBounds().top > ALTURA)
-        {
-            meteoro1.hit(0);
-            score++; //no lugar vai ser setscore de jogador
-        }
-        if (meteoro2.getGlobalBounds().top > ALTURA)
-        {
-            meteoro2.hit(0);
-            score++; //no lugar vai ser setscore de jogador
-        }
-        if (meteoro3.getGlobalBounds().top > ALTURA)
-        {
-            meteoro3.hit(0);
-            score++; //no lugar vai ser setscore de jogador
-        }
-        if (meteoroE.getGlobalBounds().top > ALTURA)
-        {
-            meteoroE.hit(1);
-            score++; //no lugar vai ser setscore de jogador
-        }
+        meteoro_saiu_da_tela(meteoro1, score, 0);
+        meteoro_saiu_da_tela(meteoro2, score, 0);
+        meteoro_saiu_da_tela(meteoro3, score, 0);
+        meteoro_saiu_da_tela(meteoroE, score, 1);
+
+        //verifca se os lasers tocaram na nave
+        laser_tocou_nave(laserInimigo1, nave, lives, demage_aliado);
+        laser_tocou_nave(laserInimigo2, nave, lives, demage_aliado);
+        laser_tocou_nave(laserInimigo3, nave, lives, demage_aliado);
+
+        //verifica se os meteoros tocaram na nave
+        meteoro_tocou_nave(meteoro1, nave, lives, 0, demage_aliado, explosao);
+        meteoro_tocou_nave(meteoro2, nave, lives, 0, demage_aliado, explosao);
+        meteoro_tocou_nave(meteoro3, nave, lives, 0, demage_aliado, explosao);
+        meteoro_tocou_nave(meteoroE, nave, lives, 1, demage_aliado, explosao);
 
         //verifca se o inimigo tocou na nave
         if (inimigo.getGlobalBounds().intersects(nave.getGlobalBounds()))
@@ -322,61 +308,9 @@ START:
         if (laserAliado1.getGlobalBounds().intersects(inimigo.getGlobalBounds()))
         {
             //implementar dano da nave inimiga
+            score++;
             demage_inimigo.restart();
             laserAliado1.setPosition(-10000, -10000);
-        }
-
-        //verifca se os lasers tocaram na nave
-        if (laserInimigo1.getGlobalBounds().intersects(nave.getGlobalBounds()))
-        {
-            lives--; //no lugar vai ser setlife de jogador
-            explosao.play();
-            laserInimigo1.setPosition(10000, 10000);
-            demage_aliado.restart();
-        }
-        if (laserInimigo2.getGlobalBounds().intersects(nave.getGlobalBounds()))
-        {
-            lives--; //no lugar vai ser setlife de jogador
-            explosao.play();
-            laserInimigo2.setPosition(10000, 10000);
-            demage_aliado.restart();
-        }
-        if (laserInimigo3.getGlobalBounds().intersects(nave.getGlobalBounds()))
-        {
-            lives--; //no lugar vai ser setlife de jogador
-            explosao.play();
-            laserInimigo3.setPosition(10000, 10000);
-            demage_aliado.restart();
-        }
-
-        //verifica se os meteoros tocaram na nave
-        if (meteoro1.getGlobalBounds().intersects(nave.getGlobalBounds()))
-        {
-            lives--; //no lugar vai ser setlife de jogador
-            explosao.play();
-            meteoro1.hit(0);
-            demage_aliado.restart();
-        }
-        if (meteoro2.getGlobalBounds().intersects(nave.getGlobalBounds()))
-        {
-            lives--; //no lugar vai ser setlife de jogador
-            explosao.play();
-            meteoro2.hit(0);
-            demage_aliado.restart();
-        }
-        if (meteoro3.getGlobalBounds().intersects(nave.getGlobalBounds()))
-        {
-            lives--; //no lugar vai ser setlife de jogador
-            explosao.play();
-            meteoro3.hit(0);
-            demage_aliado.restart();
-        }
-        if (meteoroE.getGlobalBounds().intersects(nave.getGlobalBounds()))
-        {
-            lives = lives - 3; //no lugar vai ser setlife de jogador
-            explosao.play();
-            meteoroE.hit(1);
-            demage_aliado.restart();
         }
 
         //contador para o item vida
@@ -401,12 +335,6 @@ START:
 
         dano(demage_aliado, nave);
         dano(demage_inimigo, inimigo);
-        /*
-        Time tempo_dano = tempo_demage.getElapsedTime();
-        if (int(tempo_dano.asMilliseconds()) < 100)
-            nave.setColor(Color(255, 0, 0, 250));
-        else
-            nave.setColor(Color(255, 255, 255, 255));*/
 
         //se as vidas acabaram o jogo termina
         if (lives <= 0)
@@ -447,12 +375,11 @@ START:
         window->draw(inimigo);
         window->draw(nave);
         window->draw(hud);
-
         window->display();
     }
 }
 
-//funcao responsavel por verificar se o objeto deve 
+//funcao responsavel por verificar se o objeto deve
 //ficar avermelhado (recebeu dano) ou voltar a cor normal
 void dano(Clock tempo_demage, Sprite &sprite)
 {
@@ -463,9 +390,41 @@ void dano(Clock tempo_demage, Sprite &sprite)
         sprite.setColor(Color(255, 255, 255, 255));
 }
 
+void meteoro_saiu_da_tela(Meteoro &meteoro, int &score, bool especial)
+{
+    if (meteoro.getGlobalBounds().top > ALTURA)
+    {
+        meteoro.hit(especial);
+        score++;
+    }
+}
+
+void laser_tocou_nave(Laser &laser, Nave &nave, int &lives, Clock &demage_aliado)
+{
+    if (laser.getGlobalBounds().intersects(nave.getGlobalBounds()))
+    {
+        lives--;
+        laser.setPosition(10000, 10000);
+        demage_aliado.restart();
+    }
+}
+
+void meteoro_tocou_nave(Meteoro &meteoro, Nave &nave, int &lives, bool especial, Clock &demage_aliado, Sound &explosao)
+{
+    if (meteoro.getGlobalBounds().intersects(nave.getGlobalBounds()))
+    {
+        if (especial)
+            lives = lives - 3;
+        else
+            lives--;
+        explosao.play();
+        meteoro.hit(especial);
+        demage_aliado.restart();
+    }
+}
+
 int main()
 {
-
     RenderWindow window(VideoMode(LARGURA, ALTURA), "Teste!");
     window.setFramerateLimit(60);
     Music music;
