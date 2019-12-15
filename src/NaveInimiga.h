@@ -12,7 +12,6 @@ class NaveInimiga : public Sprite {
         bool isAlive();
         void die();
         void SaiuDaTela();
-        //void shoot(); A implementar
         void update();
         float getSpeed();
     private:

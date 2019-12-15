@@ -9,8 +9,6 @@ speed(speed) {
     position.x = x;
     position.y = y;
 
-    //sp = speed;
-
     Texture *texture = new Texture();
     // imagem da aliada para testes
     texture->loadFromFile("img/nave_inimiga.png");

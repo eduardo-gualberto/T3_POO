@@ -174,7 +174,9 @@ START:
     backgorund.setScale(.475, .7);
 
     Laser laser1(ALIADO, 400, 400, 6, 0);
-    Laser laser2(INIMIGO, 350, 350, 7, 0);
+    Laser laserInimigo1(INIMIGO, 0, 0, 0, 2.5);
+    Laser laserInimigo2(INIMIGO, 0, 0, 1, 2);
+    Laser laserInimigo3(INIMIGO, 0, 0, -1, 2);
     Meteoro meteoro1(LARGURA / 2, 0, 0, 3);
     Meteoro meteoro2(LARGURA / 7, -500, 0, 3);
     Meteoro meteoro3(LARGURA / 5, -1000, 0, 3);
@@ -231,7 +233,17 @@ START:
         if (Keyboard::isKeyPressed(sf::Keyboard::A))
             nave.update(4);
 
-        if ((inimigo.getGlobalBounds().left > LARGURA) || (inimigo.getGlobalBounds().left < 0)){
+        // Bloco que faz a nave inimiga atiraar
+        if(laserInimigo1.getPosition().y >= ALTURA && laserInimigo2.getPosition().y >= ALTURA && laserInimigo3.getPosition().y >= ALTURA) {
+            laserInimigo1.setPosition(inimigo.getPosition().x + inimigo.getTexture()->getSize().x / 2, inimigo.getPosition().y + inimigo.getTexture()->getSize().y);
+            laserInimigo2.setPosition(inimigo.getPosition().x + inimigo.getTexture()->getSize().x / 2, inimigo.getPosition().y + inimigo.getTexture()->getSize().y);
+            laserInimigo3.setPosition(inimigo.getPosition().x + inimigo.getTexture()->getSize().x / 2, inimigo.getPosition().y + inimigo.getTexture()->getSize().y);
+            laserInimigo1.update();
+            laserInimigo2.update();
+            laserInimigo3.update();
+        }
+
+        if ((inimigo.getGlobalBounds().left > LARGURA - inimigo.getTexture()->getSize().x) || (inimigo.getGlobalBounds().left < 0)){
             inimigo.SaiuDaTela();
         }
         if (meteoro1.getGlobalBounds().top > ALTURA)
@@ -300,7 +312,10 @@ START:
         meteoroE.update();
         inimigo.update();
         laser1.update();
-        laser2.update();
+        laserInimigo1.update();
+        laserInimigo2.update();
+        laserInimigo3.update();
+
 
         if(laser1.getPosition().x > LARGURA){
             som_tiro.play();
@@ -309,14 +324,6 @@ START:
         if(laser1.getPosition().y > ALTURA){
             som_tiro.play();
             laser1.setPosition(LARGURA, 0);
-        }
-        if(laser2.getPosition().x > LARGURA){
-            som_tiro.play();
-            laser2.setPosition(0, ALTURA/2);
-        }
-        if(laser2.getPosition().y > ALTURA){
-            som_tiro.play();
-            laser2.setPosition(LARGURA, 0);
         }
 
         //imprimindo hud
@@ -327,7 +334,9 @@ START:
         window->clear(Color(255,255,255,255));
         window->draw(backgorund);
         window->draw(laser1);
-        window->draw(laser2);
+        window->draw(laserInimigo1);
+        window->draw(laserInimigo2);
+        window->draw(laserInimigo3);
         window->draw(meteoro1);
         window->draw(meteoro2);
         window->draw(meteoro3);
