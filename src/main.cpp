@@ -214,6 +214,12 @@ START:
     Sound explosao;
     explosao.setBuffer(buffer_explosao);
 
+    SoundBuffer buffer_explosao_inimigo;
+    if (!buffer_explosao.loadFromFile("music/inimigo_explode.ogg"))
+        std::cout << "Não foi possível abrir arquivo de áudio" << std::endl;
+    Sound explosao_inimigo;
+    explosao_inimigo.setBuffer(buffer_explosao_inimigo);
+
     SoundBuffer buffer_vida;
     if (!buffer_vida.loadFromFile("music/vida.ogg"))
         std::cout << "Não foi possível abrir arquivo de áudio" << std::endl;
@@ -255,6 +261,7 @@ START:
 
        // Atira o laser aliado
         if(laserAliado1.getPosition().y <= 0) {
+            som_tiro.play();
             laserAliado1.setPosition(nave.getPosition().x + nave.getTexture()->getSize().x / 2, nave.getPosition().y);
             laserAliado1.update();
         }
@@ -303,7 +310,15 @@ START:
         if (inimigo.getGlobalBounds().intersects(nave.getGlobalBounds()))
         {
             lives--;
+            explosao_inimigo.play();
             //implementar morte da nave inimiga
+        }
+
+        //verifca se os lasers tocaram na nave inimiga
+        if (laserAliado1.getGlobalBounds().intersects(inimigo.getGlobalBounds()))
+        {
+            //implementar dano da nave inimiga
+            laserAliado1.setPosition(-10000, -10000);
         }
 
         //verifca se os lasers tocaram na nave
@@ -368,6 +383,13 @@ START:
             lives++; //no lugar vai ser setlife de jogador
             vida.ItemCatch();
         }
+/*
+        Time tempo_respawn = tempo_morto.getElapsedTime();
+        if (int(tempo_respawn.asSeconds()) > 10)*/
+/*
+        Time tempo_dano = tempo.getElapsedTime();
+            if (int(tempo_respawn.asSeconds()) > 10)
+        Color(255, 255, 255, 255);*/
 
         //se as vidas acabaram o jogo termina
         if (lives <= 0)
