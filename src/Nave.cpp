@@ -21,7 +21,7 @@ void Nave::update(int dir){
                 break;
             }
         case (2):
-            if(py<=550){
+            if(py + this->getTexture()->getSize().y <= 595){
                 this->move(0,10);  //Eixo y para baixo;
                 break;
             }else{
@@ -29,7 +29,7 @@ void Nave::update(int dir){
                 break;
             }
         case(3):
-            if(px<=850){
+            if(px + this->getTexture()->getSize().x <= 900){
                 this->move(10,0); //Eixo x para a direita;
                 break;
             }else{

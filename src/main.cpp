@@ -180,7 +180,7 @@ START:
     Sprite backgorund(backgorund_img);
     backgorund.setScale(.475, .7);
 
-    Laser laser1(ALIADO, 400, 400, 6, 0);
+    Laser laserAliado1(ALIADO, 487.5, 450, 0, -5);
     Laser laserInimigo1(INIMIGO, 0, 0, 0, 2.5);
     Laser laserInimigo2(INIMIGO, 0, 0, 1, 2);
     Laser laserInimigo3(INIMIGO, 0, 0, -1, 2);
@@ -252,6 +252,12 @@ START:
         /*if ((Keyboard::isKeyPressed(Keyboard::Space)
 
         */
+
+       // Atira o laser aliado
+        if(laserAliado1.getPosition().y <= 0) {
+            laserAliado1.setPosition(nave.getPosition().x + nave.getTexture()->getSize().x / 2, nave.getPosition().y);
+            laserAliado1.update();
+        }
 
         // Bloco que faz a nave inimiga atiraar
         if (laserInimigo1.getPosition().y >= ALTURA && laserInimigo2.getPosition().y >= ALTURA && laserInimigo3.getPosition().y >= ALTURA)
@@ -377,7 +383,7 @@ START:
         meteoro3.update();
         meteoroE.update();
         inimigo.update();
-        laser1.update();
+        laserAliado1.update();
         laserInimigo1.update();
         laserInimigo2.update();
         laserInimigo3.update();
@@ -390,7 +396,7 @@ START:
 
         window->clear(Color(255, 255, 255, 255));
         window->draw(backgorund);
-        window->draw(laser1);
+        window->draw(laserAliado1);
         window->draw(laserInimigo1);
         window->draw(laserInimigo2);
         window->draw(laserInimigo3);
