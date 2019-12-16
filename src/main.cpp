@@ -1,8 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "Laser.h"
-#include "ArquivoRanking.h"
 #include "Meteoro.h"
+#include "Jogador.h"
 #include "NaveInimiga.h"
 #include "Item.h"
 #include "Nave.hpp"
@@ -13,10 +13,11 @@
 using namespace sf;
 
 
-void meteoro_tocou_nave(Meteoro &, Nave &, int &, bool, Clock &, Sound &);
-void laser_tocou_nave(Laser &, Nave &, int &, Clock &);
-void meteoro_saiu_da_tela(Meteoro &, int &, bool);
+void meteoro_tocou_nave(Meteoro &, Nave &, Jogador&, bool, Clock &, Sound &);
+void laser_tocou_nave(Laser &, Nave &, Jogador&, Clock &);
+void meteoro_saiu_da_tela(Meteoro &, Jogador&, bool);
 void dano(Clock, Sprite &);
+void showLeaderBoard(RenderWindow *);
 void startMenu(RenderWindow *);
 void mainGame(RenderWindow *);
 void endMenu(RenderWindow *);
@@ -40,10 +41,9 @@ std::vector<Jogador> readFile(std::string fileName){
     std::vector<Jogador> data; 
     if(file){
         file.read(reinterpret_cast<char*>(&aux), sizeof(Jogador));
-        data.push_back(aux);
-        while (!file.eof()){
-            file.read(reinterpret_cast<char*>(&aux), sizeof(Jogador));
+        while (file.good()){
             data.push_back(aux);
+            file.read(reinterpret_cast<char*>(&aux), sizeof(Jogador));
         }
     }
     file.close();
@@ -51,9 +51,72 @@ std::vector<Jogador> readFile(std::string fileName){
 }
 
 std::vector<Jogador> getRanking(std::string fileName){
-    std::vector<Jogador> file_content = readFile("teste.dat");
-    sort(file_content.begin(), file_content.end(), Jogador::comparaScore);
+    std::vector<Jogador> file_content = readFile(fileName);
+    std::sort(file_content.begin(), file_content.end(), Jogador::comparaScore);
     return file_content;
+}
+
+void showLeaderBoard(RenderWindow* window){
+    Texture backgorund_img;
+    backgorund_img.loadFromFile("img/space_bg.jpg");
+
+    Sprite backgorund(backgorund_img);
+    backgorund.setScale(.475, .7);
+
+    Font font;
+    font.loadFromFile("font_start_menu.ttf");
+
+    Text text;
+    text.setFont(font);
+    text.setString("LEADERBOARD");
+    text.setPosition(235, 40);
+    text.setCharacterSize(30);
+
+    Text text2;
+    text2.setFont(font);
+    text2.setString("QUIT [ESC]");
+    text2.setPosition(40, ALTURA - 40);
+    text2.setCharacterSize(30);
+
+    std::vector<Jogador> ranking = getRanking("io_files/data_base.dat");
+    int n = ranking.size();
+    Text scores[n];
+
+    for(int i = 0; i < ranking.size(); i++){
+        std::string id = std::to_string(i);
+        std::string points = std::to_string(ranking[i].getScore());
+        std::string str = "ID: " + id + " Score: " + points;
+        scores[i].setFont(font);
+        scores[i].setString(str);
+        scores[i].setCharacterSize(20);
+        scores[i].setPosition(235, (i + 2) * 40);
+    }
+
+
+    while (window->isOpen())
+    {
+        Event e;
+        while (window->pollEvent(e))
+        {
+            if(e.type == Event::Closed)
+                window->close();
+            if(e.type == Event::KeyPressed){
+                if(e.key.code == Keyboard::Escape)
+                    return;
+            }
+        }
+        
+    window->clear(Color(255,255,255));
+
+    window->draw(backgorund);
+    window->draw(text);
+    window->draw(text2);
+    for(int i = 0; i < ranking.size(); i++)
+        window->draw(scores[i]);
+    
+    window->display();
+    }
+
 }
 
 void startMenu(RenderWindow *window)
@@ -65,10 +128,16 @@ void startMenu(RenderWindow *window)
     font.loadFromFile("font_start_menu.ttf");
     Text text;
     text.setFont(font);
-    text.setString("PRESS ANY KEY TO START");
+    text.setString("PRESS 'SPACEBAR' TO START");
     text.setPosition(235, 272.5);
     text.setCharacterSize(30);
     float text_alpha = 255;
+
+    Text text2;
+    text2.setFont(font);
+    text2.setString("LEADERBOARD [TAB]");
+    text2.setPosition(40, ALTURA - 30);
+    text2.setCharacterSize(20);
 
     Texture backgorund_img;
     backgorund_img.loadFromFile("img/space_bg.jpg");
@@ -100,11 +169,19 @@ void startMenu(RenderWindow *window)
                 window->close();
             if (e.type == Event::KeyPressed)
             {
-                transition = true;
-                dalpha_bg_txt = 3;
-                text_alpha = bg_txt_alpha = 255;
-                som.setVolume(50);
-                som.play();
+                switch (e.key.code)
+                {
+                case Keyboard::Space:{
+                    transition = true;
+                    dalpha_bg_txt = 3;
+                    text_alpha = bg_txt_alpha = 255;
+                    som.setVolume(50);
+                    som.play();
+                    break;
+                }
+                case Keyboard::Tab:
+                    showLeaderBoard(window);
+                }
             }
         }
 
@@ -122,6 +199,7 @@ void startMenu(RenderWindow *window)
         window->draw(backgorund);
         window->draw(backgorund_txt);
         window->draw(text);
+        window->draw(text2);
 
         window->display();
     }
@@ -197,6 +275,8 @@ void endMenu(RenderWindow *window)
 void mainGame(RenderWindow *window)
 {
 START:
+
+
     Texture backgorund_img;
     backgorund_img.loadFromFile("img/space_bg.jpg");
 
@@ -224,8 +304,9 @@ START:
     hud.setFillColor(sf::Color::White);
 
     //variaveis
-    int score = 0;
-    int lives = 5;
+    /*int score = 0;
+    int lives = 5;*/
+    Jogador jogador;
     int ItemDesativado = 1;
     int vidaInimigo = inimigo.getLife();
     Clock clk;
@@ -312,26 +393,26 @@ START:
             inimigo.SaiuDaTela();
 
         //verifica se os meteoros ja sairam da tela
-        meteoro_saiu_da_tela(meteoro1, score, 0);
-        meteoro_saiu_da_tela(meteoro2, score, 0);
-        meteoro_saiu_da_tela(meteoro3, score, 0);
-        meteoro_saiu_da_tela(meteoroE, score, 1);
+        meteoro_saiu_da_tela(meteoro1, jogador, 0);
+        meteoro_saiu_da_tela(meteoro2, jogador, 0);
+        meteoro_saiu_da_tela(meteoro3, jogador, 0);
+        meteoro_saiu_da_tela(meteoroE, jogador, 1);
 
         //verifca se os lasers tocaram na nave
-        laser_tocou_nave(laserInimigo1, nave, lives, demage_aliado);
-        laser_tocou_nave(laserInimigo2, nave, lives, demage_aliado);
-        laser_tocou_nave(laserInimigo3, nave, lives, demage_aliado);
+        laser_tocou_nave(laserInimigo1, nave, jogador, demage_aliado);
+        laser_tocou_nave(laserInimigo2, nave, jogador, demage_aliado);
+        laser_tocou_nave(laserInimigo3, nave, jogador, demage_aliado);
 
         //verifica se os meteoros tocaram na nave
-        meteoro_tocou_nave(meteoro1, nave, lives, 0, demage_aliado, explosao);
-        meteoro_tocou_nave(meteoro2, nave, lives, 0, demage_aliado, explosao);
-        meteoro_tocou_nave(meteoro3, nave, lives, 0, demage_aliado, explosao);
-        meteoro_tocou_nave(meteoroE, nave, lives, 1, demage_aliado, explosao);
+        meteoro_tocou_nave(meteoro1, nave, jogador, 0, demage_aliado, explosao);
+        meteoro_tocou_nave(meteoro2, nave, jogador, 0, demage_aliado, explosao);
+        meteoro_tocou_nave(meteoro3, nave, jogador, 0, demage_aliado, explosao);
+        meteoro_tocou_nave(meteoroE, nave, jogador, 1, demage_aliado, explosao);
 
         //verifca se o inimigo tocou na nave
         if (inimigo.getGlobalBounds().intersects(nave.getGlobalBounds()))
         {
-            lives--;
+            jogador.fault(1);
             explosao_inimigo.play();
             demage_inimigo.restart();
             demage_aliado.restart();
@@ -344,13 +425,13 @@ START:
             //implementar dano da nave inimiga
 
             if(vidaInimigo <= 0) {
-                score += 100;
+                jogador.scored(100);
                 inimigo.die();
                 inimigo.setPosition(0, -1000);
             } else {
                 vidaInimigo = vidaInimigo - 10;
             }
-            score++;
+            jogador.scored(1);
             demage_inimigo.restart();
             laserAliado1.setPosition(-10000, -10000);
         }
@@ -378,7 +459,7 @@ START:
         if (vida.getGlobalBounds().intersects(nave.getGlobalBounds()))
         {
             som_vida.play();
-            lives++; //no lugar vai ser setlife de jogador
+            jogador.heal(1); //no lugar vai ser setlife de jogador
             vida.ItemCatch();
         }
         /*
@@ -389,8 +470,9 @@ START:
         dano(demage_inimigo, inimigo);
 
         //se as vidas acabaram o jogo termina
-        if (lives <= 0)
+        if (jogador.getLives() <= 0)
         {
+            writeFile("io_files/data_base.dat", jogador);
             explosao.play();
             endMenu(window);
             goto START;
@@ -409,8 +491,8 @@ START:
 
         //imprimindo hud
         std::stringstream ss;
-        ss << " -> Score:" << score << std::endl
-           << " -> Lives:" << lives << std::endl;
+        ss << " -> Score:" << jogador.getScore() << std::endl
+           << " -> Lives:" << jogador.getLives() << std::endl;
         hud.setString(ss.str());
 
         window->clear(Color(255, 255, 255, 255));
@@ -442,33 +524,33 @@ void dano(Clock tempo_demage, Sprite &sprite)
         sprite.setColor(Color(255, 255, 255, 255));
 }
 
-void meteoro_saiu_da_tela(Meteoro &meteoro, int &score, bool especial)
+void meteoro_saiu_da_tela(Meteoro &meteoro, Jogador& j, bool especial)
 {
     if (meteoro.getGlobalBounds().top > ALTURA)
     {
         meteoro.hit(especial);
-        score++;
+        j.scored(1);
     }
 }
 
-void laser_tocou_nave(Laser &laser, Nave &nave, int &lives, Clock &demage_aliado)
+void laser_tocou_nave(Laser &laser, Nave &nave, Jogador& j, Clock &demage_aliado)
 {
     if (laser.getGlobalBounds().intersects(nave.getGlobalBounds()))
     {
-        lives--;
+        j.fault(1);
         laser.setPosition(10000, 10000);
         demage_aliado.restart();
     }
 }
 
-void meteoro_tocou_nave(Meteoro &meteoro, Nave &nave, int &lives, bool especial, Clock &demage_aliado, Sound &explosao)
+void meteoro_tocou_nave(Meteoro &meteoro, Nave &nave, Jogador& j, bool especial, Clock &demage_aliado, Sound &explosao)
 {
     if (meteoro.getGlobalBounds().intersects(nave.getGlobalBounds()))
     {
         if (especial)
-            lives = lives - 3;
+            j.fault(3);
         else
-            lives--;
+            j.fault(1);
         explosao.play();
         meteoro.hit(especial);
         demage_aliado.restart();

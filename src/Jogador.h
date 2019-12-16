@@ -8,14 +8,14 @@ class Jogador
 {
 private:
     int id;
-    int score = 0;
-    int lives = 5;
+    int score;
+    int lives;
 public:
-    static int ObjectCount;
     Jogador();
     ~Jogador();
     void scored(int);
     void fault(int);
+    void heal(int);
     int getScore();
     int getLives();
     int getID();

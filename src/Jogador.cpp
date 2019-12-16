@@ -2,12 +2,11 @@
 #include "Jogador.h"
 
 Jogador::Jogador(){
-    id = ++Jogador::ObjectCount;
-    score = ((Jogador::ObjectCount % 2) + 1) * 3;
+    lives = 5;
+    score = 0;
 }
 
 Jogador::~Jogador(){
-    Jogador::ObjectCount--;
 }
 
 void Jogador::scored(int points){
@@ -20,6 +19,10 @@ void Jogador::fault(int qntd){
 
 bool Jogador::comparaScore(Jogador a, Jogador b){
     return a.getScore() > b.getScore();
+}
+
+void Jogador::heal(int qntd){
+    lives += qntd;
 }
 
 int Jogador::getScore(){return score;}
