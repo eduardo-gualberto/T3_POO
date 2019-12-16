@@ -69,27 +69,27 @@ void showLeaderBoard(RenderWindow* window){
     Text text;
     text.setFont(font);
     text.setString("LEADERBOARD");
-    text.setPosition(235, 40);
+    text.setPosition(335, 40);
     text.setCharacterSize(30);
 
     Text text2;
     text2.setFont(font);
     text2.setString("QUIT [ESC]");
-    text2.setPosition(40, ALTURA - 40);
-    text2.setCharacterSize(30);
+    text2.setPosition(40, ALTURA - 30);
+    text2.setCharacterSize(20);
 
     std::vector<Jogador> ranking = getRanking("io_files/data_base.dat");
     int n = ranking.size();
     Text scores[n];
 
     for(int i = 0; i < ranking.size(); i++){
-        std::string id = std::to_string(i);
+        std::string id = std::to_string(i + 1);
         std::string points = std::to_string(ranking[i].getScore());
         std::string str = "ID: " + id + " Score: " + points;
         scores[i].setFont(font);
         scores[i].setString(str);
         scores[i].setCharacterSize(20);
-        scores[i].setPosition(235, (i + 2) * 40);
+        scores[i].setPosition(335, (i + 2) * 40);
     }
 
 
@@ -149,7 +149,7 @@ void startMenu(RenderWindow *window)
     backgorund_txt_img.loadFromFile("img/start_menu_txt_bg.png");
 
     Sprite backgorund_txt(backgorund_txt_img);
-    backgorund_txt.setScale(12.5, 4.5);
+    backgorund_txt.setScale(14, 4.5);
     backgorund_txt.setPosition(160, 255);
     float bg_txt_alpha = 255;
     float dalpha_bg_txt = 0;
@@ -214,16 +214,22 @@ void endMenu(RenderWindow *window)
     font.loadFromFile("font_start_menu.ttf");
     Text text;
     text.setFont(font);
-    text.setString("END OF JOURNEY, JEDI");
+    text.setString("END OF JOURNEY,");
     text.setPosition(235, 272.5);
     text.setCharacterSize(30);
     float text2_alpha = 255;
 
     Text text2;
     text2.setFont(font);
-    text2.setString("PRESS ANY KEY TO RESTART");
+    text2.setString("PRESS 'SPACEBAR' TO RESTART");
     text2.setPosition(235, 307.5);
     text2.setCharacterSize(20);
+
+    Text text3;
+    text3.setFont(font);
+    text3.setString("LEADERBOARD [TAB]");
+    text3.setPosition(40, ALTURA - 30);
+    text3.setCharacterSize(20);
 
     Texture backgorund_img;
     backgorund_img.loadFromFile("img/space_bg.jpg");
@@ -246,9 +252,13 @@ void endMenu(RenderWindow *window)
                 window->close();
             if (e.type == Event::KeyPressed)
             {
-                transition = true;
-                text2_alpha = 255;
-                sabre.play();
+                if(e.key.code == Keyboard::Space){
+                    transition = true;
+                    text2_alpha = 255;
+                    sabre.play();
+                }
+                else if(e.key.code == Keyboard::Tab)
+                    showLeaderBoard(window);
             }
         }
 
@@ -263,14 +273,12 @@ void endMenu(RenderWindow *window)
         window->draw(backgorund);
         window->draw(text);
         window->draw(text2);
+        window->draw(text3);
 
         window->display();
     }
 }
 
-//janela formada será de LARGURA x ALTURA
-#define LARGURA 900
-#define ALTURA 600
 
 void mainGame(RenderWindow *window)
 {
@@ -559,7 +567,7 @@ void meteoro_tocou_nave(Meteoro &meteoro, Nave &nave, Jogador& j, bool especial,
 
 int main()
 {
-    RenderWindow window(VideoMode(LARGURA, ALTURA), "Teste!");
+    RenderWindow window(VideoMode(LARGURA, ALTURA), "SPACEPS INVADERPS!");
     window.setFramerateLimit(60);
     Music music;
     if (!music.openFromFile("music/music.ogg"))
