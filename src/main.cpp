@@ -456,7 +456,7 @@ START:
         if (vida.getGlobalBounds().intersects(nave.getGlobalBounds()))
         {
             som_vida.play();
-            jogador.heal(1); //no lugar vai ser setlife de jogador
+            jogador.heal(1);
             vida.ItemCatch();
         }
 

@@ -1,15 +1,10 @@
 # T3_POO
 
-as classes sero:
-1. NAVE PRINCIPAL - Lucas
-2. METEORO		  - Victor
-3. NAVE INIMIGA   - 
-4. LASER          - Eduardo
+JOGO: SPACEPS INVADERPS!
 
-OBSERVA-SE QUE TODAS ESTAS TEM DE SER HERDEIRAS DE SPRITE PARA PODEREM SER RENDERIZADAS NA TELA
+O jogo consiste em sobreviver com sua nave o máximo de tempo possível,
+enquanto naves inimigas e meteoros gigantes atrapalham o jogador em sua viagem pelo espaço.
 
-quem for fazer as classes acima, coloca o nome na frente dela.
-
-os arquivos cpp e h devem ser salvos em src/
-as imagens devem ser salvas em img/
-.gitignore é um arquivo que voce fala quais folders ou arquivos voce nao quer que o git faça upload, so colocar o nome la
+COMO RODAR O PROGRAMA ?		Abra um terminal na pasta do game e digite ./play.sh   
+							E divirta-se!!! :D
+						
