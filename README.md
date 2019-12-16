@@ -9,6 +9,7 @@ COMO RODAR O PROGRAMA ?
 Abra um terminal na pasta do game e digite:
 
 chmod +x play.sh
+
 ./play.sh
 
 E divirta-se!!! :D						
