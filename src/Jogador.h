@@ -6,21 +6,20 @@
 using namespace std;
 class Jogador
 {
-    public:
-        Jogador();
-        virtual ~Jogador();
-        void setNome(string nome);
-        void setPontuacao(int pontuacao);
-        string getNome();
-        int getPontuacao();
-
-    protected:
-
-    private:
-        string nome;
-        int pontuacao;
+private:
+    int id;
+    int score = 0;
+    int lives = 5;
+public:
+    static int ObjectCount;
+    Jogador();
+    ~Jogador();
+    void scored(int);
+    void fault(int);
+    int getScore();
+    int getLives();
+    int getID();
+    static bool comparaScore(Jogador, Jogador);
 };
-
 #include "Jogador.cpp"
-
 #endif // JOGADOR_H

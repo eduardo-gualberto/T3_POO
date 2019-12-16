@@ -8,18 +8,11 @@
 #include "Nave.hpp"
 #include <sstream> //para imprimir coisas na tela
 #include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace sf;
 
-/*
 
-
-
-            ESSA MAIN É EXPERIMENTAL
-            SERVE PRA TESTAR O QUE FOI FEITO ATÉ ENTÃO
-
-
-
-*/
 void meteoro_tocou_nave(Meteoro &, Nave &, int &, bool, Clock &, Sound &);
 void laser_tocou_nave(Laser &, Nave &, int &, Clock &);
 void meteoro_saiu_da_tela(Meteoro &, int &, bool);
@@ -27,6 +20,41 @@ void dano(Clock, Sprite &);
 void startMenu(RenderWindow *);
 void mainGame(RenderWindow *);
 void endMenu(RenderWindow *);
+void writeFile(std::string, Jogador);
+std::vector<Jogador> readFile(std::string);
+std::vector<Jogador> getRanking(std::string);
+
+
+
+void writeFile(std::string fileName, Jogador data){
+    std::ofstream file(fileName.c_str(), std::ios::binary | std::ios::app);
+    if(file){
+        file.write(reinterpret_cast<char*>(&data), sizeof(Jogador));
+    }
+    file.close();
+}
+
+std::vector<Jogador> readFile(std::string fileName){
+    std::ifstream file(fileName.c_str(), std::ios::binary);
+    Jogador aux;
+    std::vector<Jogador> data; 
+    if(file){
+        file.read(reinterpret_cast<char*>(&aux), sizeof(Jogador));
+        data.push_back(aux);
+        while (!file.eof()){
+            file.read(reinterpret_cast<char*>(&aux), sizeof(Jogador));
+            data.push_back(aux);
+        }
+    }
+    file.close();
+    return data;
+}
+
+std::vector<Jogador> getRanking(std::string fileName){
+    std::vector<Jogador> file_content = readFile("teste.dat");
+    sort(file_content.begin(), file_content.end(), Jogador::comparaScore);
+    return file_content;
+}
 
 void startMenu(RenderWindow *window)
 {
