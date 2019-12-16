@@ -311,9 +311,6 @@ START:
     hud.setCharacterSize(20);
     hud.setFillColor(sf::Color::White);
 
-    //variaveis
-    /*int score = 0;
-    int lives = 5;*/
     Jogador jogador;
     int ItemDesativado = 1;
     int vidaInimigo = inimigo.getLife();
@@ -329,12 +326,6 @@ START:
         std::cout << "Não foi possível abrir arquivo de áudio" << std::endl;
     Sound explosao;
     explosao.setBuffer(buffer_explosao);
-
-    SoundBuffer buffer_explosao_inimigo;
-    if (!buffer_explosao.loadFromFile("music/inimigo_explode.ogg"))
-        std::cout << "Não foi possível abrir arquivo de áudio" << std::endl;
-    Sound explosao_inimigo;
-    explosao_inimigo.setBuffer(buffer_explosao_inimigo);
 
     SoundBuffer buffer_vida;
     if (!buffer_vida.loadFromFile("music/vida.ogg"))
@@ -421,18 +412,16 @@ START:
         if (inimigo.getGlobalBounds().intersects(nave.getGlobalBounds()))
         {
             jogador.fault(1);
-            explosao_inimigo.play();
+            explosao.play();
             demage_inimigo.restart();
             demage_aliado.restart();
-            //implementar morte da nave inimiga
         }
 
         //verifca se os lasers tocaram na nave inimiga
         if (laserAliado1.getGlobalBounds().intersects(inimigo.getGlobalBounds()))
         {
-            //implementar dano da nave inimiga
-
             if(vidaInimigo <= 0) {
+            	explosao.play();
                 jogador.scored(100);
                 inimigo.die();
                 inimigo.setPosition(0, -1000);
@@ -470,9 +459,6 @@ START:
             jogador.heal(1); //no lugar vai ser setlife de jogador
             vida.ItemCatch();
         }
-        /*
-        Time tempo_respawn = tempo_morto.getElapsedTime();
-        if (int(tempo_respawn.asSeconds()) > 10)*/
 
         dano(demage_aliado, nave);
         dano(demage_inimigo, inimigo);
