@@ -183,7 +183,7 @@ START:
     Meteoro meteoro2(LARGURA / 7, -500, 0, 3);
     Meteoro meteoro3(LARGURA / 5, -1000, 0, 3);
     Meteoro meteoroE(LARGURA / 1.8, -2000, 1, 1);
-    NaveInimiga inimigo(true, 1, 1, 1.5);
+    NaveInimiga inimigo(true, 100,  1, 1, 1.5);
     Item vida(1);
     Nave nave;
 
@@ -199,7 +199,9 @@ START:
     int score = 0;
     int lives = 5;
     int ItemDesativado = 1;
+    int vidaInimigo = inimigo.getLife();
     Clock clk;
+    Clock respawnInimigo;
     Clock demage_aliado;
     Clock demage_inimigo;
 
@@ -236,6 +238,10 @@ START:
     som_tiroinimigo.setBuffer(buffer_tiroinimigo);
     /*                                                                          */
 
+    // Rotacionando laser:
+    laserInimigo2.rotate(345);
+    laserInimigo3.rotate(15);
+
     while (window->isOpen())
     {
         Event e;
@@ -262,7 +268,7 @@ START:
         }
 
         // Bloco que faz a nave inimiga atiraar
-        if (laserInimigo1.getPosition().y >= ALTURA && laserInimigo2.getPosition().y >= ALTURA && laserInimigo3.getPosition().y >= ALTURA)
+        if (laserInimigo1.getPosition().y >= ALTURA && laserInimigo2.getPosition().y >= ALTURA && laserInimigo3.getPosition().y >= ALTURA && inimigo.isAlive())
         {
             som_tiroinimigo.play();
             laserInimigo1.setPosition(inimigo.getPosition().x + inimigo.getTexture()->getSize().x / 2, inimigo.getPosition().y + inimigo.getTexture()->getSize().y);
@@ -308,9 +314,27 @@ START:
         if (laserAliado1.getGlobalBounds().intersects(inimigo.getGlobalBounds()))
         {
             //implementar dano da nave inimiga
+
+            if(vidaInimigo <= 0) {
+                score += 100;
+                inimigo.die();
+                inimigo.setPosition(0, -1000);
+            } else {
+                vidaInimigo = vidaInimigo - 10;
+            }
             score++;
             demage_inimigo.restart();
             laserAliado1.setPosition(-10000, -10000);
+        }
+
+        // Tempo de respawn do inimigo (Aumentar/Diminuir, altere 10)
+        Time tempoRespawn = respawnInimigo.getElapsedTime();
+        if(!inimigo.isAlive()) {
+            if(int(tempoRespawn.asSeconds()) > 10) {
+                respawnInimigo.restart();
+                vidaInimigo = 100;
+                inimigo.respawn();
+            }
         }
 
         //contador para o item vida

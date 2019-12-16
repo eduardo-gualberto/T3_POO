@@ -1,8 +1,10 @@
 #pragma once
 #include "NaveInimiga.h"
+#include "time.h"
+#define LARGURA 900
 
-NaveInimiga::NaveInimiga(bool alive, float x, float y, float speed):
-speed(speed) {
+NaveInimiga::NaveInimiga(bool alive, int life, float x, float y, float speed):
+life(life), speed(speed) {
 
     alive = true;
 
@@ -23,6 +25,20 @@ bool NaveInimiga::isAlive() {
 
 void NaveInimiga::die() {
     alive = false;
+}
+
+void NaveInimiga::respawn() {
+    alive = true;
+
+    srand(time(NULL));
+    position.y = 0;
+    position.x = rand() % (LARGURA-this->getTexture()->getSize().x);
+
+    this->setPosition(position);
+}
+
+int NaveInimiga::getLife() {
+    return life;
 }
 
 float NaveInimiga::getSpeed(){
